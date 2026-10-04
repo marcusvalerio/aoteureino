@@ -1,0 +1,52 @@
+ARQUIVO DE TESTE DO IMPORTADOR — NÃO É CONTEÚDO EDITORIAL.
+Os textos abaixo existem apenas para validar o formato e o layout.
+
+01 OUTUBRO
+QUINTA-FEIRA
+[Título de teste do dia 1]
+
+A PALAVRA
+[Texto bíblico de teste — primeira linha.]
+[Texto bíblico de teste — segunda linha.]
+— Livro 1:1-2
+
+REFLEXÃO
+[Parágrafo de teste. Lorem ipsum em português: este parágrafo serve apenas para medir o ritmo da leitura, a largura da coluna e o espaço entre as linhas.]
+
+[Segundo parágrafo de teste, um pouco mais longo, para verificar como a página se comporta quando o texto se estende por várias linhas em uma tela pequena de celular.]
+
+PARE AQUI
+[Pergunta de teste para interiorização?]
+
+ORE
+[Oração de teste em um parágrafo.]
+
+VIVA ISSO HOJE
+[Prática de teste.]
+
+PARA LEVAR COM VOCÊ
+[Frase final de teste.]
+
+REFERÊNCIA
+Livro 1:1-2
+
+UMA PERGUNTA PARA LEVAR COM VOCÊ
+[Pergunta de compartilhamento de teste?]
+
+02 DE OUTUBRO
+SEXTA-FEIRA
+ENCONTRO
+[Título de teste do dia 2]
+
+REFLEXÃO: [Seção inline de teste.]
+
+12 OUTUBRO
+DATA ESPECIAL — [Rótulo de teste]
+[Título de teste do dia 12]
+
+20 OUTUBRO
+A VISITA DO ANJO
+[Título de teste do dia 20]
+
+PARE AQUI
+[Pausa de teste.]

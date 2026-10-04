@@ -1,0 +1,182 @@
+"use client";
+
+/**
+ * A VISITA — uma interrupção da rotina.
+ *
+ * Experiência escondida: só acontece no próprio dia marcado pela editoria
+ * (kind "visita") e nunca é anunciada antes. A interface some, o ritmo
+ * muda, o texto chega um trecho de cada vez, com luz e silêncio.
+ *
+ * Linguagem editorial: não afirma aparições, nem que Deus enviou algo pelo
+ * aplicativo. Só abre espaço.
+ *
+ * Ensaio para revisão: /?ensaio=visita (usa o devocional do dia, não registra).
+ */
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "motion/react";
+import { displayTitle, type Devotional } from "@/content";
+import { dayOf } from "@/lib/dates";
+import { markVisited } from "@/lib/path";
+
+const ease = [0.22, 0.61, 0.36, 1] as const;
+
+interface Step {
+  label?: string;
+  text: string;
+  display?: boolean;
+  /** Silêncio antes de permitir continuar (ms). */
+  hold?: number;
+}
+
+function stepsFor(d: Devotional): Step[] {
+  const s: Step[] = [];
+  if (d.word?.reference) s.push({ label: "A Palavra", text: d.word.reference.split(/;\s*/).join("\n"), display: true, hold: 2500 });
+  d.reflection.forEach((p, i) => s.push({ label: i === 0 ? "Reflexão" : undefined, text: p }));
+  d.pause.forEach((p, i) => s.push({ label: i === 0 ? "Pare aqui" : undefined, text: p, display: true, hold: 7000 }));
+  if (d.prayer.length) s.push({ label: "Ore", text: d.prayer.join("\n\n"), display: true, hold: 3000 });
+  if (d.practice.length) s.push({ label: "Viva isso hoje", text: d.practice.join("\n\n") });
+  if (d.closingPhrase) s.push({ label: "Para levar com você", text: d.closingPhrase, display: true, hold: 2500 });
+  return s;
+}
+
+export function Visita({ devotional, rehearsal = false }: { devotional: Devotional; rehearsal?: boolean }) {
+  const router = useRouter();
+  const steps = useMemo(() => stepsFor(devotional), [devotional]);
+  // -1: a luz chegando · 0..n-1: trechos · n: fim
+  const [i, setI] = useState(-1);
+  const [ready, setReady] = useState(false);
+
+  const step = i >= 0 && i < steps.length ? steps[i] : null;
+  const end = i >= steps.length;
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- cada trecho pede seu próprio tempo de silêncio
+    setReady(false);
+    const hold = i === -1 ? 4800 : (step?.hold ?? 1600);
+    const t = setTimeout(() => setReady(true), hold);
+    return () => clearTimeout(t);
+  }, [i, step]);
+
+  const next = useCallback(() => {
+    if (!ready) return;
+    if (end) {
+      if (!rehearsal) markVisited(devotional.date);
+      router.push(rehearsal ? "/" : `/dia/${dayOf(devotional.date)}`);
+      return;
+    }
+    setI((v) => v + 1);
+  }, [ready, end, rehearsal, devotional.date, router]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " " || e.key === "ArrowRight") {
+        e.preventDefault();
+        next();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [next]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-[#0b0a09] text-[#ece4d6]" role="region" aria-label="Uma pausa diferente">
+      {/* A fresta de luz */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-0 h-full -translate-x-1/2"
+        style={{
+          background:
+            "linear-gradient(to bottom, transparent 0%, rgb(243 214 160 / 0.55) 30%, rgb(255 240 210 / 0.9) 52%, rgb(243 214 160 / 0.45) 75%, transparent 100%)",
+          maskImage: "linear-gradient(to right, transparent, #000 42%, #000 58%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, #000 42%, #000 58%, transparent)",
+        }}
+        initial={{ width: 1, opacity: 0, scaleY: 0 }}
+        animate={
+          i === -1
+            ? { width: ["1px", "2px", "min(70vw, 26rem)"], opacity: [0, 1, 0.1], scaleY: [0, 1, 1] }
+            : { width: "min(86vw, 34rem)", opacity: 0.07, scaleY: 1 }
+        }
+        transition={i === -1 ? { duration: 4.4, times: [0, 0.45, 1], ease } : { duration: 2.4, ease }}
+      />
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(60% 50% at 50% 48%, rgb(243 205 140 / 0.16), transparent 70%)" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: i === -1 ? 0.6 : 1 }}
+        transition={{ duration: 3, ease }}
+      />
+
+      <button
+        type="button"
+        onClick={next}
+        className="relative flex flex-1 flex-col items-center justify-center px-8 text-center outline-none"
+        aria-label={ready ? (end ? "Concluir" : "Continuar") : "Aguarde"}
+      >
+        <AnimatePresence mode="wait">
+          {i === -1 && (
+            <motion.p
+              key="title"
+              className="font-display max-w-md text-[1.65rem] leading-[1.25] text-balance"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.9 } }}
+              transition={{ duration: 2, delay: 2.8, ease }}
+            >
+              {displayTitle(devotional.title)}
+            </motion.p>
+          )}
+          {step && (
+            <motion.div
+              key={i}
+              className="max-w-xl"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4, transition: { duration: 0.7 } }}
+              transition={{ duration: 1.4, ease }}
+              aria-live="polite"
+            >
+              {step.label && <p className="eyebrow mb-8 text-[#d4b47c]">{step.label}</p>}
+              <p
+                className={`whitespace-pre-line text-balance ${
+                  step.display
+                    ? "font-display text-[calc(1.6rem*var(--reading-scale))] leading-[1.3]"
+                    : "reading text-[#ddd3c3]"
+                }`}
+              >
+                {step.text}
+              </p>
+            </motion.div>
+          )}
+          {end && (
+            <motion.div
+              key="end"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.6, ease }}
+              className="flex flex-col items-center gap-6"
+            >
+              <span aria-hidden className="stone-basalt stone-mark inline-block" />
+              <p className="eyebrow text-[#cbbfa9]">Volte quando quiser</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </button>
+
+      <div className="relative flex h-24 items-center justify-center pb-safe">
+        <motion.span
+          className="eyebrow text-[0.625rem] text-[#cbbfa9]"
+          animate={{ opacity: ready ? 0.8 : 0 }}
+          transition={{ duration: 1.2, ease }}
+          aria-hidden
+        >
+          {end ? "Tocar para concluir" : "Tocar para continuar"}
+        </motion.span>
+      </div>
+      {rehearsal && (
+        <p className="eyebrow absolute left-4 top-[max(1rem,env(safe-area-inset-top))] text-[0.55rem] text-[#cbbfa9]/50">Ensaio</p>
+      )}
+    </div>
+  );
+}
