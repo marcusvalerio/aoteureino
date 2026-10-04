@@ -43,3 +43,8 @@ npm run content:import -- outro-arquivo.txt
 O importador preserva o texto, reconhece as seções (PALAVRA, REFLEXÃO, PARE AQUI, ORE,
 VIVA ISSO HOJE, PARA LEVAR COM VOCÊ, REFERÊNCIA) e marcadores de dia
 (ENCONTRO, DATA ESPECIAL, PAUSA, MERGULHO, A VISITA DO ANJO), e lista o que faltar.
+
+### Prévia em página única
+
+`npm run preview:artifact` gera `preview/` — os mesmos componentes, com rotas por âncora
+(`#palavra`, `#dia-4`, `#jornada`, `#ensaio-visita`), para publicar como página privada.
