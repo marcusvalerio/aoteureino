@@ -9,7 +9,6 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "content:import": "node scripts/import-content.mts",
-    "assets:opening": "node scripts/opening/render.mjs && node scripts/opening/textures.mjs",
     "qa:screens": "node scripts/qa/screens.mjs",
     "preview:artifact": "node scripts/preview/build.mjs"
   },

@@ -101,7 +101,7 @@ export function ShareSheet({ open, onClose, title, question, phrase, reference }
             role="dialog"
             aria-modal="true"
             aria-label="Compartilhar uma reflexão"
-            className="relative max-h-[94dvh] w-full max-w-md overflow-y-auto bg-bg px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 sm:rounded-sm"
+            className="relative max-h-[94dvh] w-full max-w-md overflow-y-auto rounded-t-[1.75rem] bg-bg px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 sm:rounded-[1.75rem]"
             initial={{ y: 24, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 16, opacity: 0 }}
@@ -121,7 +121,7 @@ export function ShareSheet({ open, onClose, title, question, phrase, reference }
             </div>
 
             {question && phrase && (
-              <div className="mt-3 grid grid-cols-2 border border-line" role="radiogroup" aria-label="O que compartilhar">
+              <div className="mt-3 grid grid-cols-2 gap-1 rounded-full border border-line bg-bg-deep/50 p-1" role="radiogroup" aria-label="O que compartilhar">
                 {(["pergunta", "frase"] as const).map((m) => (
                   <button
                     key={m}
@@ -129,8 +129,8 @@ export function ShareSheet({ open, onClose, title, question, phrase, reference }
                     role="radio"
                     aria-checked={mode === m}
                     onClick={() => setMode(m)}
-                    className={`eyebrow min-h-11 text-[0.625rem] transition-colors duration-300 ${
-                      mode === m ? "bg-ink text-bg" : "text-ink-2 hover:text-ink"
+                    className={`eyebrow min-h-10 rounded-full text-[0.625rem] transition-colors duration-300 ${
+                      mode === m ? "bg-surface text-ink shadow-[var(--shadow)]" : "text-ink-3 hover:text-ink"
                     }`}
                   >
                     {m === "pergunta" ? "Pergunta" : "Frase"}
@@ -139,25 +139,25 @@ export function ShareSheet({ open, onClose, title, question, phrase, reference }
               </div>
             )}
 
-            <div className="mt-5 aspect-[4/5] w-full overflow-hidden bg-basalt shadow-[0_24px_50px_-30px_rgb(0_0_0/0.8)]">
+            <div className="mt-5 aspect-[4/5] w-full overflow-hidden rounded-2xl bg-deep shadow-[0_24px_50px_-30px_rgb(0_0_0/0.8)]">
               {url ? (
                 // eslint-disable-next-line @next/next/no-img-element -- imagem gerada localmente (data URL)
                 <img src={url} alt={`Cartão: ${text}`} className="h-full w-full" />
               ) : (
-                <div className="h-full w-full animate-pulse bg-basalt" />
+                <div className="h-full w-full animate-pulse bg-deep" />
               )}
             </div>
 
             <div className="mt-6 grid grid-cols-3 gap-2">
-              <button type="button" onClick={shareImage} className="eyebrow flex min-h-14 flex-col items-center justify-center gap-2 bg-ink text-[0.6rem] text-bg">
+              <button type="button" onClick={shareImage} className="eyebrow flex min-h-14 flex-col items-center justify-center gap-2 rounded-2xl bg-[var(--cta)] text-[0.625rem] text-[var(--cta-ink)]">
                 <Share size={17} strokeWidth={1.5} />
                 Enviar
               </button>
-              <button type="button" onClick={download} className="eyebrow flex min-h-14 flex-col items-center justify-center gap-2 border border-line text-[0.6rem] text-ink-2 hover:text-ink">
+              <button type="button" onClick={download} className="eyebrow flex min-h-14 flex-col items-center justify-center gap-2 rounded-2xl border border-line text-[0.625rem] text-ink-2 hover:text-ink">
                 <Download size={17} strokeWidth={1.5} />
                 Imagem
               </button>
-              <button type="button" onClick={copy} className="eyebrow flex min-h-14 flex-col items-center justify-center gap-2 border border-line text-[0.6rem] text-ink-2 hover:text-ink">
+              <button type="button" onClick={copy} className="eyebrow flex min-h-14 flex-col items-center justify-center gap-2 rounded-2xl border border-line text-[0.625rem] text-ink-2 hover:text-ink">
                 {copied ? <Check size={17} strokeWidth={1.5} /> : <Copy size={17} strokeWidth={1.5} />}
                 {copied ? "Copiado" : "Texto"}
               </button>

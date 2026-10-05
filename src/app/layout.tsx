@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Faculty_Glyphic, Geist } from "next/font/google";
+import { Geist, Instrument_Serif } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
 import { BOOT_SCRIPT } from "@/lib/boot";
 import "./globals.css";
 
-const faculty = Faculty_Glyphic({
-  variable: "--font-faculty",
+const serif = Instrument_Serif({
+  variable: "--font-serif",
   weight: "400",
+  style: ["normal", "italic"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
 });
@@ -29,12 +30,12 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#ebe5da",
+  themeColor: "#f7f5f3",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${faculty.variable} ${geist.variable}`} suppressHydrationWarning>
+    <html lang="pt-BR" className={`${serif.variable} ${geist.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
       </head>

@@ -1,8 +1,9 @@
 # AO TEU REINO — Devocional Evangélico
 
 MVP 1.0 · mobile-first · Next.js 16, React 19, TypeScript, Tailwind CSS 4, Motion, Lucide.
+Tipografia: Instrument Serif (títulos) e Geist (interface).
 
-Pedra · luz · caminho · casa · Palavra · silêncio · presença.
+Luz · movimento · espaço · Palavra · presença.
 
 ## Rodar
 
@@ -21,11 +22,11 @@ Ensaio da experiência escondida: `/?ensaio=visita`.
 content/fonte/outubro-2026.txt     fonte editorial (não é editada)
 content/editorial/                 ajustes rastreáveis (.ajustes.json) e notas de decisão
 scripts/import-content.mts         .txt → src/content/outubro-2026/devotionals.json
-scripts/opening/                   gera a cena da abertura e as texturas de pedra (WebP)
 scripts/qa/screens.mjs             capturas de tela para revisão visual
 src/content/                       modelo (types.ts), repositório (index.ts), seleção da PALAVRA
 src/lib/                           datas, preferências, salvos, caminho — tudo local
-src/components/opening/            abertura (pedra → casa → porta)
+src/components/light/              campo de luz (LightField) e composições (presets)
+src/components/opening/            abertura (luz → toque → o nome desce → a interface nasce)
 src/components/special/Visita.tsx  experiência escondida
 src/components/share/              cartão de compartilhamento (canvas)
 src/app/                           rotas: / · /dia/[dia] · /palavra · /jornada · /salvos · /mais

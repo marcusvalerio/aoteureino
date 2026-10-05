@@ -16,9 +16,13 @@
  *
  * Ensaio para revisão: /?ensaio=visita (usa o devocional do dia, não registra).
  */
+import { useCalmMotion } from "@/hooks/useReducedMotion";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
+import { useRef } from "react";
+import { LightField, type LightFieldHandle } from "@/components/light/LightField";
+import { VISITA } from "@/components/light/presets";
 import { displayTitle, type Devotional } from "@/content";
 import { dayOf } from "@/lib/dates";
 import { markVisited } from "@/lib/path";
@@ -59,6 +63,12 @@ export function Visita({ devotional, rehearsal = false }: { devotional: Devotion
   // -1: a luz chegando · 0..n-1: trechos · n: fim
   const [i, setI] = useState(-1);
   const [ready, setReady] = useState(false);
+  const reduced = useCalmMotion();
+  const field = useRef<LightFieldHandle>(null);
+  useEffect(() => {
+    // ondas muito lentas: uma pausa, não um espetáculo
+    field.current?.setSpeed(0.3);
+  }, []);
 
   const step = i >= 0 && i < steps.length ? steps[i] : null;
   const end = i >= steps.length;
@@ -95,7 +105,15 @@ export function Visita({ devotional, rehearsal = false }: { devotional: Devotion
   }, [next, leave]);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-[#0b0a09] text-[#ece4d6]" role="region" aria-label="Uma pausa diferente">
+    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-[#0a110f] text-[#f2eee8]" role="region" aria-label="Uma pausa diferente">
+      <motion.div
+        className="absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: end ? 0.25 : i === -1 ? 0.5 : 0.8 }}
+        transition={{ duration: 4, ease }}
+      >
+        <LightField ref={field} bands={VISITA} live={!reduced} seed={23} className="absolute inset-0" />
+      </motion.div>
       {/* A fresta de luz */}
       <motion.div
         aria-hidden
@@ -133,7 +151,7 @@ export function Visita({ devotional, rehearsal = false }: { devotional: Devotion
           {i === -1 && (
             <motion.p
               key="title"
-              className="font-display max-w-md text-[1.65rem] leading-[1.25] text-balance"
+              className="font-display max-w-md text-[2.4rem] leading-[1.08] text-balance"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.9 } }}
@@ -152,17 +170,17 @@ export function Visita({ devotional, rehearsal = false }: { devotional: Devotion
               transition={{ duration: 1.4, ease }}
               aria-live="polite"
             >
-              {step.label && <p className="eyebrow mb-8 text-[#d4b47c]">{step.label}</p>}
+              {step.label && <p className="eyebrow mb-8 text-[#e1b270]">{step.label}</p>}
               <p
                 className={`whitespace-pre-line text-balance ${
                   step.display
-                    ? "font-display text-[calc(1.6rem*var(--reading-scale))] leading-[1.3]"
-                    : "reading text-[#ddd3c3]"
+                    ? "font-display text-[calc(2rem*var(--reading-scale))] leading-[1.18]"
+                    : "reading text-[#e3ddd3]"
                 }`}
               >
                 {step.text}
               </p>
-              {step.note && <p className="mt-8 text-[0.9375rem] leading-relaxed text-[#cbbfa9]">{step.note}</p>}
+              {step.note && <p className="mt-8 text-[0.9375rem] leading-relaxed text-[#c9cbc3]">{step.note}</p>}
             </motion.div>
           )}
           {end && (
@@ -173,7 +191,7 @@ export function Visita({ devotional, rehearsal = false }: { devotional: Devotion
               transition={{ duration: 1.6, ease }}
               className="flex flex-col items-center gap-6"
             >
-              <span aria-hidden className="stone stone-mark inline-block opacity-60" />
+              <span aria-hidden className="light-point inline-block h-2.5 w-2.5" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -181,7 +199,7 @@ export function Visita({ devotional, rehearsal = false }: { devotional: Devotion
 
       <div className="relative flex h-24 items-center justify-center pb-safe">
         <motion.span
-          className="eyebrow text-[0.625rem] text-[#cbbfa9]"
+          className="eyebrow text-[0.625rem] text-[#c9cbc3]"
           animate={{ opacity: ready ? 0.8 : 0 }}
           transition={{ duration: 1.2, ease }}
           aria-hidden
@@ -205,13 +223,13 @@ export function Visita({ devotional, rehearsal = false }: { devotional: Devotion
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.2, ease }}
-          className="eyebrow absolute right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] min-h-11 px-3 text-[0.5625rem] text-[#cbbfa9]/55 transition-colors hover:text-[#cbbfa9]"
+          className="eyebrow absolute right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] min-h-11 px-3 text-[0.625rem] text-[#c9cbc3]/55 transition-colors hover:text-[#c9cbc3]"
         >
           Ler na página
         </motion.button>
       )}
       {rehearsal && (
-        <p className="eyebrow absolute left-4 top-[max(1rem,env(safe-area-inset-top))] text-[0.55rem] text-[#cbbfa9]/50">Ensaio</p>
+        <p className="eyebrow absolute left-4 top-[max(1rem,env(safe-area-inset-top))] text-[0.625rem] text-[#c9cbc3]/50">Ensaio</p>
       )}
     </div>
   );

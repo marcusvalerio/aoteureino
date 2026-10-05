@@ -41,5 +41,5 @@ export function applySettings() {
   const reduced = s.motion === "reduzido" || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   root.dataset.motion = reduced ? "reduced" : "full";
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", dark ? "#151311" : "#ebe5da");
+  if (meta) meta.setAttribute("content", dark ? "#0e1513" : "#f7f5f3");
 }

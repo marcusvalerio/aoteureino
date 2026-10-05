@@ -1,82 +1,51 @@
 "use client";
 
 /**
- * A abertura do AO TEU REINO.
+ * A abertura do AO TEU REINO — luz, movimento, Palavra.
  *
- * Pedra → casa → caminho → porta. Uma imagem pré-renderizada, camadas
- * de luz e transformações de escala — nada de 3D, nada de WebGL.
+ * 1. Quase escuro. Horizontes de luz surgem e respiram devagar.
+ * 2. ENTRAR: o toque perturba o campo de luz; ele acelera e se reorganiza.
+ * 3. O nome desce, conduzido por uma curva de luz.
+ * 4. Tudo desacelera. O nome se define. DEVOCIONAL EVANGÉLICO. ENTRAR.
+ * 5. A última onda clareia a tela; o nome encolhe até o cabeçalho e a
+ *    interface nasce daquela luz.
  *
- * A cena é uma reconstrução artística inspirada na arquitetura simples da
- * Galileia do século I. Não representa nenhuma casa histórica específica.
+ * Alto ↔ baixo, luz ↔ matéria, movimento ↔ permanência: metáfora visual
+ * (Mt 6:10), não afirmação teológica. Nada é desenhado de forma literal.
  */
+import { useCalmMotion } from "@/hooks/useReducedMotion";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { motion, useReducedMotionConfig } from "motion/react";
+import { animate, motion } from "motion/react";
 import { KEYS, write } from "@/lib/storage";
-import { CLOSE, DOOR, DOOR_CENTER, FOCUS, pct } from "./geometry";
+import { ENTER_EVENT, announceEntered } from "@/lib/entered";
+import { LightField, type LightFieldHandle } from "@/components/light/LightField";
+import { OPENING } from "@/components/light/presets";
 
-type Phase = "idle" | "dark" | "reveal" | "pull" | "title" | "ready" | "entering" | "veil" | "out" | "done";
+type Phase = "idle" | "emerge" | "await" | "touch" | "descend" | "settle" | "ready" | "home" | "out" | "done";
 
-const PULL_FROM = 4.2;
-const EASE_CALM = [0.22, 0.61, 0.36, 1] as const;
-const EASE_CAMERA = [0.45, 0, 0.15, 1] as const;
-const EASE_DOOR = [0.7, 0, 0.84, 0] as const;
+const FLOW = [0.45, 0, 0.15, 1] as const;
+const CALM = [0.22, 0.61, 0.36, 1] as const;
+const LAND = [0.16, 0.84, 0.3, 1] as const;
 
 export const REPLAY_EVENT = "atr:abertura";
 
-function after(ms: number) {
-  return new Promise<void>((r) => setTimeout(r, ms));
-}
-
-async function decode(src: string) {
-  const img = new Image();
-  img.src = src;
-  try {
-    await Promise.race([img.decode(), after(2500)]);
-  } catch {
-    /* segue mesmo sem a imagem */
-  }
-}
+const after = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 export function Opening() {
   const [phase, setPhase] = useState<Phase>("idle");
-  const [fast, setFast] = useState(false);
-  const reduced = useReducedMotionConfig() ?? false;
+  const [ripple, setRipple] = useState<{ x: number; y: number; id: number } | null>(null);
+  const reduced = useCalmMotion();
+  const field = useRef<LightFieldHandle>(null);
+  const title = useRef<HTMLDivElement>(null);
   const run = useRef(0);
-
-  const finish = useCallback(async () => {
-    write(KEYS.opening, "vista");
-    document.documentElement.style.overflow = "";
-    setPhase("out");
-    await after(750);
-    document.documentElement.dataset.opening = "done";
-    setPhase("done");
-  }, []);
 
   const start = useCallback(async () => {
     const id = ++run.current;
-    const alive = () => run.current === id;
-    setFast(false);
-    setPhase("dark");
-    await decode(window.innerWidth > 900 ? "/opening/casa.webp" : "/opening/casa-1200.webp");
-    if (!reduced) await decode("/opening/pedra.webp");
-    if (!alive()) return;
-    if (reduced) {
-      setPhase("ready");
-      return;
-    }
-    setPhase("reveal");
-    await after(2000);
-    if (!alive()) return;
-    setPhase("pull");
-    await after(3600);
-    if (!alive()) return;
-    setPhase("title");
-    await after(1000);
-    if (!alive()) return;
-    setPhase((p) => (p === "title" ? "ready" : p));
+    setPhase("emerge");
+    await after(reduced ? 900 : 3400);
+    if (run.current === id) setPhase("await");
   }, [reduced]);
 
-  // Decide no carregamento: abertura completa só na primeira entrada.
   useEffect(() => {
     if (document.documentElement.dataset.opening === "full") {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- inicia a sequência após a hidratação
@@ -84,56 +53,88 @@ export function Opening() {
     }
     const replay = () => {
       document.documentElement.dataset.opening = "full";
+      window.dispatchEvent(new Event(ENTER_EVENT));
       window.scrollTo(0, 0);
+      if (title.current) title.current.style.transform = "";
       void start();
     };
     window.addEventListener(REPLAY_EVENT, replay);
     return () => window.removeEventListener(REPLAY_EVENT, replay);
   }, [start]);
 
-  const skipToEnd = () => {
-    if (phase === "reveal" || phase === "pull" || phase === "dark") {
-      run.current++;
-      setFast(true);
-      setPhase("ready");
-    }
-  };
-
-  const enter = async (quick = false) => {
+  /** Primeiro toque: a luz responde e o nome começa a descer. */
+  const touch = async (x: number, y: number) => {
+    if (phase !== "await") return;
     const id = ++run.current;
-    if (reduced || quick) {
-      setFast(true);
-      setPhase("veil");
-      await after(reduced ? 450 : 600);
-    } else {
-      setPhase("entering");
-      await after(1900);
-      if (run.current !== id) return;
-      setPhase("veil");
-      await after(450);
+    if (reduced) {
+      setPhase("settle");
+      await after(700);
+      if (run.current === id) setPhase("ready");
+      return;
     }
+    const px = (x / window.innerWidth) * 100;
+    const py = (y / window.innerHeight) * 100;
+    field.current?.perturb(px, py, 1.2);
+    setRipple({ x, y, id });
+    setPhase("touch");
+    await after(900);
     if (run.current !== id) return;
-    void finish();
+    setPhase("descend");
+    await after(3400);
+    if (run.current !== id) return;
+    field.current?.setSpeed(0.25);
+    setPhase("settle");
+    await after(1500);
+    if (run.current === id) setPhase("ready");
   };
 
-  // Tecla Esc pula; Enter entra.
+  /** A interface nasce da luz: o nome vai para o cabeçalho, a última onda clareia tudo. */
+  const enterHome = async (quick = false) => {
+    const id = ++run.current;
+    write(KEYS.opening, "vista");
+    setPhase("home");
+    field.current?.setSpeed(2.2);
+
+    const target = document.querySelector<HTMLElement>("[data-wordmark]");
+    const el = title.current;
+    const titleVisible = phase === "ready" || phase === "settle";
+    if (!reduced && !quick && el && target && titleVisible) {
+      const a = el.getBoundingClientRect();
+      const b = target.getBoundingClientRect();
+      const s = b.height / a.height;
+      void animate(
+        el,
+        { x: b.left - a.left, y: b.top - a.top, scale: s },
+        { duration: 1.5, ease: FLOW },
+      );
+    }
+    await after(reduced || quick ? 450 : 1350);
+    if (run.current !== id) return;
+    announceEntered("revealing");
+    document.documentElement.style.overflow = "";
+    setPhase("out");
+    await after(reduced ? 300 : 800);
+    if (run.current !== id) return;
+    announceEntered("done");
+    setPhase("done");
+  };
+
+  // Esc pula para o aplicativo
   useEffect(() => {
-    if (phase === "idle" || phase === "done") return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") void enter(true);
-    };
+    if (phase === "idle" || phase === "done" || phase === "home" || phase === "out") return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && void enterHome(true);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   });
 
   if (phase === "done") return null;
 
-  const scale = phase === "dark" || phase === "reveal" ? PULL_FROM : 1;
-  const zoomDoor = phase === "entering" || phase === "veil";
-  const lit = phase !== "idle" && phase !== "dark";
-  const showTitle = phase === "title" || phase === "ready";
-  const showEnter = phase === "ready";
-  const t = (d: number) => (fast ? Math.min(d, 0.6) : d);
+  const descending = phase === "descend" || phase === "settle" || phase === "ready" || phase === "home";
+  const showTitle = descending;
+  const settled = phase === "settle" || phase === "ready" || phase === "home";
+  const lit = phase !== "idle";
+  const leaving = phase === "home" || phase === "out";
+  const lightAmount = phase === "emerge" || phase === "await" ? 0.55 : phase === "touch" ? 0.85 : 1;
 
   return (
     <div
@@ -141,199 +142,166 @@ export function Opening() {
       role="dialog"
       aria-modal="true"
       aria-label="Abertura — AO TEU REINO"
-      className={`fixed inset-0 z-[100] overflow-hidden text-[#efe6d6] ${phase === "out" ? "pointer-events-none" : "bg-[#070605]"}`}
-      onClick={skipToEnd}
+      className={`fixed inset-0 z-[100] overflow-hidden ${phase === "out" ? "pointer-events-none" : ""}`}
+      onClick={(e) => phase === "await" && void touch(e.clientX, e.clientY)}
     >
-      {phase !== "idle" && phase !== "out" && (
-        <>
-          {/* Palco quadrado que cobre a tela */}
-          <div
-            className="absolute left-1/2 top-1/2 aspect-square"
-            style={{ width: "max(100vw, 100dvh)", transform: "translate(-50%, -50%)" }}
-            aria-hidden
-          >
-            <motion.div
-              className="absolute inset-0"
-              style={{ transformOrigin: `${pct(DOOR_CENTER.x)} ${pct(DOOR_CENTER.y)}`, willChange: "transform" }}
-              initial={false}
-              animate={{ scale: zoomDoor ? 14 : 1 }}
-              transition={{ duration: zoomDoor ? 1.5 : 0, delay: zoomDoor ? 0.45 : 0, ease: EASE_DOOR }}
-            >
-              <motion.div
-                className="absolute inset-0"
-                style={{ transformOrigin: `${pct(FOCUS.x)} ${pct(FOCUS.y)}`, willChange: "transform" }}
-                initial={{ scale: reduced ? 1 : PULL_FROM, y: "0%" }}
-                animate={{ scale: reduced ? 1 : scale, y: phase === "pull" || showTitle ? "0%" : "1.2%" }}
-                transition={{ duration: t(phase === "pull" ? 4.8 : 0.8), ease: EASE_CAMERA }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element -- imagem estática pré-renderizada */}
-                <img
-                  src="/opening/casa-1200.webp"
-                  srcSet="/opening/casa-1200.webp 1200w, /opening/casa.webp 2400w"
-                  sizes="max(100vw, 100vh)"
-                  alt=""
-                  className="absolute inset-0 h-full w-full select-none"
-                  draggable={false}
-                />
-                {!reduced && (
-                  <motion.img
-                    src="/opening/pedra.webp"
-                    alt=""
-                    draggable={false}
-                    className="absolute select-none"
-                    style={{
-                      left: pct(CLOSE.left),
-                      top: pct(CLOSE.top),
-                      width: pct(CLOSE.size),
-                      height: pct(CLOSE.size),
-                    }}
-                    initial={{ opacity: 1 }}
-                    animate={{ opacity: phase === "dark" || phase === "reveal" ? 1 : 0 }}
-                    transition={{ duration: t(1.8), delay: phase === "pull" ? 1.4 : 0, ease: "linear" }}
-                  />
-                )}
-                {/* A porta recebe luz */}
-                <motion.div
-                  className="absolute"
-                  style={{
-                    left: pct(DOOR.left),
-                    top: pct(DOOR.top),
-                    width: pct(DOOR.right - DOOR.left),
-                    height: pct(DOOR.bottom - DOOR.top),
-                    background:
-                      "radial-gradient(120% 80% at 50% 85%, #fff3d6 0%, #f3d397 38%, #c98f4c 75%, #8a5a2c 100%)",
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: zoomDoor ? 1 : showEnter ? 0.12 : 0 }}
-                  transition={{ duration: zoomDoor ? 0.9 : 2.4, ease: EASE_CALM }}
-                />
-                {/* Luz que se derrama sobre o caminho */}
-                <motion.div
-                  className="absolute"
-                  style={{
-                    left: pct(DOOR.left - 260),
-                    top: pct(DOOR.bottom - 6),
-                    width: pct(DOOR.right - DOOR.left + 520),
-                    height: pct(520),
-                    background: "radial-gradient(50% 60% at 50% 0%, rgb(243 211 151 / 0.55), transparent 70%)",
-                    clipPath: "polygon(38% 0, 62% 0, 100% 100%, 0 100%)",
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: zoomDoor ? 1 : 0 }}
-                  transition={{ duration: 0.9, ease: EASE_CALM }}
-                />
-                {/* Halo da porta */}
-                <motion.div
-                  className="absolute rounded-full"
-                  style={{
-                    left: pct(DOOR_CENTER.x - 420),
-                    top: pct(DOOR_CENTER.y - 420),
-                    width: pct(840),
-                    height: pct(840),
-                    background: "radial-gradient(closest-side, rgb(243 205 140 / 0.45), transparent)",
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: zoomDoor ? 1 : 0 }}
-                  transition={{ duration: 1, ease: EASE_CALM }}
-                />
-              </motion.div>
-            </motion.div>
-          </div>
-
-          {/* Escuridão que a luz vai vencendo */}
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[#050403]"
-            initial={{ opacity: 1 }}
-            animate={{
-              opacity: phase === "dark" ? 1 : phase === "reveal" ? 0.42 : zoomDoor ? 0.1 : 0.18,
-            }}
-            transition={{ duration: t(phase === "reveal" ? 2.6 : 1.4), ease: EASE_CALM }}
-          />
-          {/* Luz rasante, vinda da esquerda */}
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(104deg, rgb(236 196 140 / 0.2) 0%, rgb(236 196 140 / 0.06) 32%, transparent 58%)",
-            }}
-            initial={{ opacity: 0, x: "-6%" }}
-            animate={{ opacity: lit ? 1 : 0, x: lit ? "0%" : "-6%" }}
-            transition={{ duration: t(3.2), ease: EASE_CALM }}
-          />
-          {/* Sombra superior para o título respirar */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-[45%]"
-            style={{ background: "linear-gradient(to bottom, rgb(5 4 3 / 0.55), transparent)" }}
-          />
-
-          {/* Título */}
-          <motion.div
-            className="absolute inset-x-0 top-[13%] px-6 text-center sm:top-[11%]"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: showTitle ? 1 : 0, y: showTitle ? 0 : 10 }}
-            transition={{ duration: zoomDoor ? 0.5 : t(1.6), ease: EASE_CALM }}
-          >
-            <h1 className="font-display text-[2.6rem] leading-[1.02] tracking-[0.06em] text-[#f1e8d8] sm:text-6xl">
-              AO TEU
-              <br />
-              REINO
-            </h1>
-            <p className="eyebrow mt-5 text-[#cdbfa8]">Devocional Evangélico</p>
-          </motion.div>
-
-          {/* Entrar */}
-          <motion.div
-            className="absolute inset-x-0 bottom-[max(9%,calc(env(safe-area-inset-bottom)+40px))] flex justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: showEnter ? 1 : 0 }}
-            transition={{ duration: t(1.2), ease: EASE_CALM }}
-          >
-            <button
-              type="button"
-              disabled={!showEnter}
-              onClick={(e) => {
-                e.stopPropagation();
-                void enter();
-              }}
-              className="eyebrow group relative min-h-12 min-w-44 px-8 text-[0.75rem] tracking-[0.42em] text-[#f1e8d8] transition-colors duration-700 hover:text-white"
-            >
-              <span className="absolute inset-0 border border-[#f1e8d8]/35 transition-colors duration-700 group-hover:border-[#f3d397]/70" />
-              <span className="relative pl-[0.42em]">Entrar</span>
-            </button>
-          </motion.div>
-
-          {/* Pular — sempre disponível */}
-          {!zoomDoor && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                void enter(true);
-              }}
-              className="eyebrow absolute right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] min-h-11 px-3 text-[0.625rem] text-[#efe6d6]/55 transition-colors hover:text-[#efe6d6]"
-            >
-              Pular
-            </button>
-          )}
-        </>
-      )}
-
-      {/* Véu final: a luz da casa vira a luz da interface */}
+      {/* Noite: o fundo de onde a luz surge */}
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{ background: "var(--bg)" }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: phase === "veil" ? 1 : 0 }}
-        transition={
-          phase === "out" ? { duration: 0.7, ease: EASE_CALM } : { duration: reduced || fast ? 0.45 : 0.4, ease: "easeIn" }
-        }
+        className="absolute inset-0 bg-[#0a110f]"
+        initial={false}
+        animate={{ opacity: phase === "out" ? 0 : 1 }}
+        transition={{ duration: 0.8, ease: CALM }}
       />
+
+      {phase !== "idle" && (
+        <motion.div
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: phase === "out" ? 0 : lit ? 1 : 0 }}
+          transition={{ duration: phase === "emerge" ? 4.6 : 0.8, ease: phase === "emerge" ? [0.55, 0, 0.6, 1] : CALM }}
+        >
+          <LightField
+            ref={field}
+            bands={OPENING}
+            live={!reduced}
+            seed={11}
+            className="absolute inset-0"
+            lightOpacity={lightAmount}
+          />
+
+          {/* O fundo muda gradualmente enquanto o nome desce */}
+          <motion.div
+            aria-hidden
+            className="absolute inset-0"
+            style={{ background: "radial-gradient(120% 70% at 50% 0%, rgb(98 65 51 / 0.55), transparent 70%)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: descending ? 1 : 0 }}
+            transition={{ duration: 3.4, ease: FLOW }}
+          />
+
+          {/* Resposta ao toque */}
+          {ripple && (
+            <motion.span
+              key={ripple.id}
+              aria-hidden
+              className="absolute h-[60vmax] w-[60vmax] rounded-full"
+              style={{
+                left: ripple.x,
+                top: ripple.y,
+                x: "-50%",
+                y: "-50%",
+                background: "radial-gradient(closest-side, transparent 74%, rgb(247 245 243 / 0.5) 82%, rgb(225 178 112 / 0.25) 88%, transparent 100%)",
+              }}
+              initial={{ scale: 0.05, opacity: 0.9 }}
+              animate={{ scale: 2.2, opacity: 0 }}
+              transition={{ duration: 2.2, ease: [0.1, 0.6, 0.3, 1] }}
+            />
+          )}
+          <div aria-hidden className="grain absolute inset-0 opacity-[0.06] mix-blend-overlay" />
+        </motion.div>
+      )}
+
+      {/* O nome, conduzido pela luz */}
+      <div className="pointer-events-none absolute inset-x-0 top-[42%] z-20 flex justify-center px-5">
+        <motion.div
+          className="relative flex flex-col items-center"
+          initial={false}
+          animate={
+            reduced
+              ? { opacity: showTitle ? 1 : 0, y: 0 }
+              : { opacity: showTitle ? 1 : 0, y: descending ? 0 : "-62vh" }
+          }
+          transition={{
+            y: { duration: 3.4, ease: LAND },
+            opacity: { duration: descending && !reduced ? 1.4 : 0.9, ease: CALM },
+          }}
+        >
+          {/* curva de luz que acompanha a descida */}
+          {!reduced && (
+            <motion.span
+              aria-hidden
+              className="absolute left-1/2 top-[calc(-6.5rem-2.5vw)] h-[150vw] w-[230vw] -translate-x-1/2"
+              style={{
+                background:
+                  "radial-gradient(closest-side, transparent 88%, rgb(225 178 112 / 0.22) 93.2%, rgb(247 245 243 / 0.85) 94.2%, rgb(225 178 112 / 0.3) 95.6%, transparent 99%)",
+                maskImage: "linear-gradient(to bottom, #000 0%, #000 12%, transparent 30%)",
+                WebkitMaskImage: "linear-gradient(to bottom, #000 0%, #000 12%, transparent 30%)",
+              }}
+              animate={{ opacity: leaving ? 0 : settled ? 0.55 : 1 }}
+              transition={{ duration: 1.6, ease: CALM }}
+            />
+          )}
+          <div
+            ref={title}
+            className="relative origin-top-left"
+            style={{
+              color: leaving ? "var(--ink)" : "#f7f5f3",
+              transition: "color 1.4s cubic-bezier(0.45, 0, 0.15, 1)",
+            }}
+          >
+            <h1 className="font-display whitespace-nowrap text-[clamp(2.75rem,12.5vw,6.5rem)] leading-none tracking-[0.04em]">AO TEU REINO</h1>
+          </div>
+          <motion.p
+            className="eyebrow mt-6 text-[#e3ddd3]"
+            initial={false}
+            animate={{ opacity: settled && !leaving ? 0.85 : 0, y: settled ? 0 : 6 }}
+            transition={{ duration: 1.4, ease: CALM }}
+          >
+            Devocional Evangélico
+          </motion.p>
+        </motion.div>
+      </div>
+
+      {/* ENTRAR — discreto: texto e uma linha */}
+      {(phase === "await" || phase === "ready") && (
+        <motion.button
+          key={phase}
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (phase === "await") void touch(e.clientX, e.clientY);
+            else void enterHome();
+          }}
+          className="group absolute bottom-[max(9%,calc(env(safe-area-inset-bottom)+48px))] left-1/2 flex min-h-12 min-w-32 -translate-x-1/2 flex-col items-center justify-center gap-2.5 text-[#f7f5f3]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.6, ease: CALM }}
+        >
+          <span className="eyebrow pl-[0.32em] text-[0.6875rem] tracking-[0.32em]">Entrar</span>
+          <span aria-hidden className="block h-px w-8 bg-[#e1b270]/70 transition-all duration-700 group-hover:w-14" />
+        </motion.button>
+      )}
+
+      {/* Pular — sempre disponível */}
+      {!leaving && phase !== "idle" && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            void enterHome(true);
+          }}
+          className="eyebrow absolute right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] min-h-11 px-3 text-[0.625rem] text-[#f7f5f3]/50 transition-colors hover:text-[#f7f5f3]"
+        >
+          Pular
+        </button>
+      )}
+
+      {/* A última onda: a luz da interface sobe e cobre a tela */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-0 z-10 h-[260vmax] w-[260vmax]"
+        style={{
+          x: "-50%",
+          background: "radial-gradient(closest-side, var(--bg) 80%, rgb(225 178 112 / 0.5) 86%, rgb(247 245 243 / 0.0) 96%)",
+        }}
+        initial={false}
+        animate={{ y: leaving ? "-28%" : "60%", opacity: phase === "home" ? 1 : 0 }}
+        transition={{ y: { duration: reduced ? 0.4 : 1.5, ease: FLOW }, opacity: { duration: phase === "out" ? 0.8 : 0.5, ease: CALM } }}
+      />
+
       <span className="sr-only" aria-live="polite">
-        {phase === "ready" ? "Ao Teu Reino. Devocional Evangélico. Botão Entrar disponível." : ""}
+        {phase === "await" ? "Botão Entrar disponível." : phase === "ready" ? "Ao Teu Reino. Devocional Evangélico. Botão Entrar disponível." : ""}
       </span>
       <noscript>
         <style>{`#abertura{display:none}`}</style>

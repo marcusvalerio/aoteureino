@@ -43,7 +43,7 @@ export function BottomNav() {
                   {active && (
                     <motion.span
                       layoutId="nav-light"
-                      className="block h-[5px] w-4 rounded-[45%_55%_40%_60%/60%_50%_50%_40%] bg-accent"
+                      className="light-point block h-[5px] w-[5px]"
                       transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
                     />
                   )}

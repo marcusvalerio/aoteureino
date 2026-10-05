@@ -34,7 +34,7 @@ function Segmented<T extends string | number>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div role="radiogroup" aria-label={label} className="grid border border-line" style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
+    <div role="radiogroup" aria-label={label} className="grid gap-1 rounded-full border border-line bg-bg-deep/50 p-1" style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
       {options.map((o) => (
         <button
           key={String(o.value)}
@@ -43,7 +43,9 @@ function Segmented<T extends string | number>({
           aria-checked={value === o.value}
           aria-label={o.aria}
           onClick={() => onChange(o.value)}
-          className={`min-h-12 px-2 text-[0.875rem] transition-colors duration-300 ${value === o.value ? "bg-ink text-bg" : "text-ink-2 hover:text-ink"}`}
+          className={`min-h-11 rounded-full px-2 text-[0.875rem] transition-[background-color,color,box-shadow] duration-500 ${
+            value === o.value ? "bg-surface text-ink shadow-[var(--shadow)]" : "text-ink-3 hover:text-ink"
+          }`}
         >
           {o.label}
         </button>
@@ -61,8 +63,8 @@ function Toggle({ label, hint, checked, onChange }: { label: string; hint?: stri
       </span>
       <span className="relative inline-flex shrink-0">
         <input type="checkbox" role="switch" checked={checked} onChange={(e) => onChange(e.target.checked)} className="peer sr-only" />
-        <span className="h-7 w-12 rounded-full border border-line-strong bg-bg-deep transition-colors duration-300 peer-checked:border-ink peer-checked:bg-ink peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--focus)]" />
-        <span className="absolute left-1 top-1 h-5 w-5 rounded-full bg-ink-3 transition-all duration-300 peer-checked:translate-x-5 peer-checked:bg-bg" />
+        <span className="h-7 w-12 rounded-full border border-line-strong bg-bg-deep transition-colors duration-300 peer-checked:border-[var(--cta)] peer-checked:bg-[var(--cta)] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--focus)]" />
+        <span className="absolute left-1 top-1 h-5 w-5 rounded-full bg-ink-3 transition-all duration-300 peer-checked:translate-x-5 peer-checked:bg-[var(--cta-ink)]" />
       </span>
     </label>
   );
@@ -123,7 +125,7 @@ export function Mais() {
     <section className="flex flex-1 flex-col px-6 sm:px-10">
       <header className="pb-8 pt-[max(2rem,calc(env(safe-area-inset-top)+1rem))]">
         <p className="eyebrow text-accent">Mais</p>
-        <h1 className="font-display mt-4 text-[2.4rem] leading-[1.05] text-ink">Ajustes</h1>
+        <h1 className="font-display mt-4 text-[3.1rem] leading-[1] text-ink">Ajustes</h1>
       </header>
 
       <div className={hydrated ? "" : "invisible"}>
@@ -134,11 +136,10 @@ export function Mais() {
             onChange={(theme) => set({ theme })}
             options={[
               { value: "sistema", label: "Sistema" },
-              { value: "claro", label: "Calcário" },
-              { value: "escuro", label: "Basalto" },
+              { value: "claro", label: "Claro" },
+              { value: "escuro", label: "Escuro" },
             ]}
           />
-          <p className="mt-3 text-[0.8125rem] text-ink-3">Calcário é claro; Basalto é escuro.</p>
         </Section>
 
         <Section title="Tamanho do texto">
@@ -172,7 +173,7 @@ export function Mais() {
           <button type="button" onClick={replay} className="mt-4 flex min-h-14 w-full items-center justify-between border-t border-line text-left">
             <span>
               <span className="block text-[0.9375rem] text-ink">Ver a abertura novamente</span>
-              <span className="mt-1 block text-[0.8125rem] text-ink-3">Pedra, casa, caminho, porta.</span>
+              <span className="mt-1 block text-[0.8125rem] text-ink-3">Luz, movimento e o nome.</span>
             </span>
             <span className="eyebrow text-[0.625rem] text-ink-2">Ver</span>
           </button>
@@ -184,9 +185,7 @@ export function Mais() {
               AO TEU REINO é um devocional diário. Cada dia traz uma passagem, uma reflexão, um momento para parar, uma oração, uma prática e uma frase para levar com
               você.
             </p>
-            <p className="mt-4">
-              A casa da abertura é uma reconstrução artística inspirada na arquitetura simples da Galileia do século I. Não representa nenhuma casa histórica específica.
-            </p>
+            <p className="mt-4">A identidade visual é feita de luz, espaço e tipografia. Nada na interface tenta representar Deus visualmente; a Palavra ocupa esse lugar.</p>
             <p className="mt-4 text-ink-3">Versão 1.0 · Conteúdo de outubro de 2026.</p>
           </Disclosure>
           <Disclosure title="Referências">
@@ -209,17 +208,17 @@ export function Mais() {
           <Disclosure title="Privacidade">
             <p>Não há conta, cadastro ou rastreamento. O que você guarda, suas preferências e os dias lidos ficam apenas neste aparelho, no armazenamento do navegador.</p>
             {!confirmErase ? (
-              <button type="button" onClick={() => setConfirmErase(true)} className="eyebrow mt-6 min-h-12 border border-line-strong px-5 text-[0.625rem] text-ink">
+              <button type="button" onClick={() => setConfirmErase(true)} className="eyebrow mt-6 min-h-12 rounded-full border border-line-strong px-6 text-[0.625rem] text-ink">
                 Apagar dados deste aparelho
               </button>
             ) : (
-              <div className="mt-6 border border-line-strong p-5">
+              <div className="paper mt-6 p-5">
                 <p className="text-ink">Apagar salvos, preferências e o caminho percorrido? Isso não pode ser desfeito.</p>
                 <div className="mt-4 flex gap-2">
-                  <button type="button" onClick={erase} className="eyebrow min-h-12 flex-1 bg-ink text-[0.625rem] text-bg">
+                  <button type="button" onClick={erase} className="eyebrow min-h-12 flex-1 rounded-full bg-[var(--cta)] text-[0.625rem] text-[var(--cta-ink)]">
                     Apagar
                   </button>
-                  <button type="button" onClick={() => setConfirmErase(false)} className="eyebrow min-h-12 flex-1 border border-line text-[0.625rem] text-ink-2">
+                  <button type="button" onClick={() => setConfirmErase(false)} className="eyebrow min-h-12 flex-1 rounded-full border border-line text-[0.625rem] text-ink-2">
                     Cancelar
                   </button>
                 </div>

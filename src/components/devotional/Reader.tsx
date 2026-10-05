@@ -1,15 +1,18 @@
 "use client";
 
+import { useCalmMotion } from "@/hooks/useReducedMotion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Share } from "lucide-react";
-import { motion, useInView, useReducedMotionConfig } from "motion/react";
+import { motion, useInView } from "motion/react";
 import { KIND_LABEL, displayTitle, getDevotional, type Devotional } from "@/content";
 import { DAYS_IN_MONTH, isFuture, monthName, weekday } from "@/lib/dates";
 import { markWalked, useVisits } from "@/lib/path";
 import { useSettings } from "@/lib/settings";
 import { useToday } from "@/hooks/useToday";
-import { Divider, Eyebrow, IconButton, StoneTag } from "@/components/ui/primitives";
+import { Divider, Eyebrow, IconButton, Tag } from "@/components/ui/primitives";
+import { LightField } from "@/components/light/LightField";
+import { PAUSE } from "@/components/light/presets";
 import { SaveButton } from "@/components/ui/SaveButton";
 import { ShareSheet } from "@/components/share/ShareSheet";
 import { Visita } from "@/components/special/Visita";
@@ -17,7 +20,7 @@ import { Visita } from "@/components/special/Visita";
 const ease = [0.22, 0.61, 0.36, 1] as const;
 
 function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const reduced = useReducedMotionConfig();
+  const reduced = useCalmMotion();
   if (reduced) return <div className={className}>{children}</div>;
   return (
     <motion.div
@@ -110,7 +113,7 @@ function Devotional({ devotional: d, day }: { devotional: Devotional; day: numbe
         </motion.p>
         {special && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.1, ease }} className="mt-6">
-            <StoneTag>{d.label ?? KIND_LABEL[d.kind]}</StoneTag>
+            <Tag>{d.label ?? KIND_LABEL[d.kind]}</Tag>
           </motion.div>
         )}
         <motion.h1
@@ -118,7 +121,7 @@ function Devotional({ devotional: d, day }: { devotional: Devotional; day: numbe
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, delay: 0.15, ease }}
-          className="font-display mt-6 text-[2.15rem] leading-[1.1] text-ink text-balance sm:text-[2.75rem]"
+          className="font-display mt-6 text-[2.75rem] leading-[1.02] text-ink text-balance sm:text-[3.4rem]"
         >
           {title}
         </motion.h1>
@@ -132,7 +135,7 @@ function Devotional({ devotional: d, day }: { devotional: Devotional; day: numbe
             </Eyebrow>
             <div className="mt-5 space-y-1">
               {refs.map((r) => (
-                <p key={r} className="font-display text-[1.6rem] leading-snug text-ink">
+                <p key={r} className="font-display text-[2rem] leading-[1.1] text-ink">
                   {r}
                 </p>
               ))}
@@ -158,13 +161,17 @@ function Devotional({ devotional: d, day }: { devotional: Devotional; day: numbe
       )}
 
       {d.pause.length > 0 && (
-        <Reveal className="-mx-6 mb-16 sm:mx-0">
-          <section aria-labelledby="s-pare" className="stone-basalt fragment px-8 py-16 text-center sm:px-14">
-            <h2 id="s-pare" className="eyebrow engraved text-[0.6875rem]">
+        <Reveal className="-mx-2 mb-16 sm:mx-0">
+          <section
+            aria-labelledby="s-pare"
+            className="relative overflow-hidden rounded-[1.75rem] bg-deep px-8 py-16 text-center text-deep-ink shadow-[var(--shadow)] sm:px-14"
+          >
+            <LightField bands={PAUSE} seed={4} className="absolute inset-0" />
+            <h2 id="s-pare" className="eyebrow relative text-[0.6875rem] text-[#e1b270]">
               Pare aqui
             </h2>
-            <span aria-hidden className="mx-auto mt-6 block h-8 w-px bg-[#e9e2d5]/25" />
-            <Paragraphs items={d.pause} className="font-display reading-display mt-6 text-[#efe7d9] text-balance" />
+            <span aria-hidden className="relative mx-auto mt-6 block h-8 w-px bg-[#f7f5f3]/25" />
+            <Paragraphs items={d.pause} className="font-display reading-display relative mt-6 text-[calc(1.75rem*var(--reading-scale))]! text-[#f7f5f3] text-balance" />
           </section>
         </Reveal>
       )}
@@ -198,7 +205,7 @@ function Devotional({ devotional: d, day }: { devotional: Devotional; day: numbe
               <Eyebrow as="h2">
                 <span id="s-levar">Para levar com você</span>
               </Eyebrow>
-              <p className="font-display mx-auto mt-7 max-w-[30rem] text-[calc(1.75rem*var(--reading-scale))] leading-[1.25] text-ink text-balance">
+              <p className="font-display mx-auto mt-7 max-w-[30rem] text-[calc(2.1rem*var(--reading-scale))] leading-[1.12] text-ink text-balance">
                 {d.closingPhrase}
               </p>
               <div className="mt-8 flex items-center justify-center gap-1">
@@ -290,11 +297,11 @@ function NotYet({ devotional, day }: { devotional: Devotional; day: number }) {
         </Link>
       </div>
       <div className="flex flex-1 flex-col items-start justify-center pb-24">
-        <span className="font-display text-[5rem] leading-none text-ink-3/60">{String(day).padStart(2, "0")}</span>
+        <span className="font-display text-[6rem] leading-none text-ink-3/60">{String(day).padStart(2, "0")}</span>
         <p className="eyebrow mt-4 text-ink-3">
           {weekday(devotional.date)} · {monthName(devotional.date)}
         </p>
-        <h1 className="font-display mt-10 text-[1.9rem] leading-tight text-ink">Este dia ainda não chegou.</h1>
+        <h1 className="font-display mt-10 text-[2.4rem] leading-[1.05] text-ink">Este dia ainda não chegou.</h1>
         <p className="mt-4 max-w-sm text-[1rem] leading-relaxed text-ink-2">
           Ele estará aqui em {day} de {monthName(devotional.date).toLowerCase()}. Até lá, fique com o dia de hoje.
         </p>

@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
 import { removeSaved, useSaved, type SavedKind } from "@/lib/saved";
 import { useHydrated } from "@/lib/storage";
+import { LightMark } from "@/components/ui/primitives";
 
 const ease = [0.22, 0.61, 0.36, 1] as const;
 
@@ -28,7 +29,7 @@ export function Salvos() {
     <section className="flex flex-1 flex-col px-6 sm:px-10">
       <header className="pb-8 pt-[max(2rem,calc(env(safe-area-inset-top)+1rem))]">
         <p className="eyebrow text-accent">Salvos</p>
-        <h1 className="font-display mt-4 text-[2.4rem] leading-[1.05] text-ink">O que ficou com você</h1>
+        <h1 className="font-display mt-4 text-[3.1rem] leading-[1] text-ink">O que ficou com você</h1>
       </header>
 
       {hydrated && items.length > 0 && (
@@ -57,7 +58,7 @@ export function Salvos() {
           transition={{ duration: 1, ease }}
           className="flex flex-1 flex-col items-start justify-center pb-24"
         >
-          <span aria-hidden className="stone stone-mark inline-block opacity-80" />
+          <LightMark />
           <p className="font-display mt-8 text-[1.5rem] leading-snug text-ink">
             {items.length === 0 ? "Nada guardado ainda." : "Nada guardado nesta categoria."}
           </p>
@@ -81,7 +82,7 @@ export function Salvos() {
             >
               <div className="flex gap-3 py-6">
                 <Link href={item.href} className="min-w-0 flex-1">
-                  <p className="eyebrow text-[0.5625rem] text-ink-3">{KIND[item.kind]}</p>
+                  <p className="eyebrow text-[0.625rem] text-ink-3">{KIND[item.kind]}</p>
                   {item.kind !== "frase" ? (
                     <p className="font-display mt-2 text-[1.35rem] leading-snug text-ink">{item.title}</p>
                   ) : (

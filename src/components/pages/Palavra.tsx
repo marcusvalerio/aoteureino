@@ -5,7 +5,7 @@ import { palavraFor, passageText } from "@/content";
 import { useSettings } from "@/lib/settings";
 import { useToday } from "@/hooks/useToday";
 import { SaveButton } from "@/components/ui/SaveButton";
-import { StoneMark } from "@/components/ui/primitives";
+import { LightMark } from "@/components/ui/primitives";
 
 const ease = [0.22, 0.61, 0.36, 1] as const;
 
@@ -18,12 +18,16 @@ export function Palavra() {
   const { verseNumbers } = useSettings();
   if (!today) return <div className="flex-1" aria-busy="true" />;
   const p = palavraFor(today.day);
+  // "1 Reis 19:11–12" → livro em itálico; capítulo e versículos em destaque
+  const m = p.reference.match(/^(.*\D)\s+(\d.*)$/);
+  const book = m ? m[1] : p.reference;
+  const verses = m ? m[2] : "";
 
   return (
     <section className="flex flex-1 flex-col px-6 sm:px-10">
       <header className="pb-12 pt-[max(2rem,calc(env(safe-area-inset-top)+1rem))]">
         <h1 className="eyebrow text-accent">Palavra</h1>
-        <p className="font-display mt-4 text-[1.35rem] leading-snug text-ink-2">Uma passagem para hoje.</p>
+        <p className="font-display mt-4 text-[1.6rem] leading-snug text-ink-2">Uma passagem para hoje.</p>
       </header>
 
       <motion.article
@@ -34,8 +38,11 @@ export function Palavra() {
         className="flex flex-1 flex-col"
       >
         <div className="flex flex-1 flex-col justify-center pb-10">
-          <h2 id="ref" className="font-display text-[2.5rem] leading-[1.1] text-ink text-balance sm:text-[3rem]">
-            {p.reference}
+          <h2 id="ref" className="font-display text-ink">
+            <span className="block text-[3.25rem] italic leading-[1] sm:text-[4.25rem]">{book}</span>
+            <span className="mt-1 block text-[4.5rem] leading-[0.95] tracking-[-0.01em] [font-variant-numeric:lining-nums] sm:text-[6rem]">
+              {verses}
+            </span>
           </h2>
           <span aria-hidden className="mt-9 block h-px w-10 bg-line-strong" />
 
@@ -62,7 +69,7 @@ export function Palavra() {
         </div>
 
         <div className="mt-16 flex items-center justify-between border-t border-line pb-8 pt-4">
-          <StoneMark />
+          <LightMark />
           <SaveButton
             withText
             label="Guardar passagem"
