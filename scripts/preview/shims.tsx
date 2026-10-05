@@ -15,7 +15,7 @@ export function toHash(href: string) {
 
 export function hashToPath() {
   const h = window.location.hash.replace(/^#/, "").split("--")[0];
-  if (!h) return "/";
+  if (!h || h.startsWith("ensaio-")) return "/";
   const m = h.match(/^dia-(\d+)$/);
   return m ? `/dia/${m[1]}` : `/${h}`;
 }
@@ -45,9 +45,8 @@ export function usePathname() {
 
 export function useSearchParams() {
   const hash = useSyncExternalStore(subscribe, () => window.location.hash, () => "");
-  const extra = hash.split("--")[1] ?? "";
   const p = new URLSearchParams();
-  const m = extra.match(/^ensaio-(\w+)$/);
+  const m = hash.match(/(?:^#|--)ensaio-(\w+)/);
   if (m) p.set("ensaio", m[1]);
   return p;
 }
