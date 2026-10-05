@@ -70,6 +70,28 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   await p.goto(BASE + '/'); await wait(2500); await shot(p, '24-abertura-reduzida');
   await c.close();
 }
+// 3b. A visita no próprio dia (20/10), Jornada antes e depois, dias 19 e 31
+{
+  const { c, p } = await ctx();
+  await p.addInitScript(() => localStorage.setItem('atr.abertura.v1', '"vista"'));
+  await p.goto(BASE + '/jornada?hoje=2026-10-20'); await wait(1500);
+  await p.mouse.wheel(0, 900); await wait(800); await shot(p, '29-jornada-antes-da-visita');
+  await p.goto(BASE + '/'); await wait(700); await shot(p, '30-visita-transicao');
+  await wait(2600); await shot(p, '31-visita-fresta');
+  await wait(3200); await shot(p, '32-visita-titulo');
+  await p.mouse.click(195, 420); await wait(2400); await shot(p, '33-visita-palavra');
+  for (let k = 0; k < 6; k++) { await wait(2600); await p.mouse.click(195, 420); }
+  await wait(2600); await shot(p, '34-visita-pare-aqui');
+  for (let k = 0; k < 6; k++) { await wait(8200); await p.mouse.click(195, 420); }
+  await wait(3800); await shot(p, '35-visita-fim');
+  await p.mouse.click(195, 420); await wait(1800); await shot(p, '36-visita-depois-leitor');
+  await p.goto(BASE + '/jornada'); await wait(1500); await p.mouse.wheel(0, 900); await wait(800); await shot(p, '37-jornada-depois-da-visita');
+  await p.goto(BASE + '/'); await wait(1500); await shot(p, '38-inicio-depois-da-visita');
+  await p.goto(BASE + '/dia/19'); await wait(1500); await shot(p, '39-dia-19', true);
+  await p.goto(BASE + '/?hoje=2026-10-31'); await wait(1500); await shot(p, '40-dia-31-inicio');
+  await p.goto(BASE + '/palavra'); await wait(2500); await shot(p, '41-palavra-31');
+  await c.close();
+}
 // 4. Desktop
 {
   const { c, p } = await ctx({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, hasTouch: false });

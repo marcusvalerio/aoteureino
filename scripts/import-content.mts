@@ -18,25 +18,7 @@ const OUT = new URL("../src/content/outubro-2026/devotionals.json", import.meta.
 
 const DEFAULT_SOURCE = new URL("../content/fonte/outubro-2026.txt", import.meta.url);
 
-/**
- * Datas especiais: só são marcadas quando o próprio texto do dia cita a data.
- * O rótulo é exatamente o nome usado no arquivo.
- */
-const SPECIAL_DATES: Record<number, string> = {
-  15: "Dia do Professor",
-  17: "Dia Internacional para a Erradicação da Pobreza",
-  24: "Dia das Nações Unidas",
-  31: "Dia Nacional da Proclamação do Evangelho",
-};
-
-/**
- * O arquivo não traz "pergunta para compartilhar". Por padrão ela vem do
- * PARE AQUI. Quando o PARE AQUI depende do contexto (ex.: "Depois de
- * responder à pergunta..."), usamos uma frase literal do próprio dia.
- */
-const SHARE_FROM_TEXT: Record<number, string> = {
-  4: "O que você realmente gostaria que Deus mudasse em sua vida — e o que você sabe que também precisa mudar em você?",
-};
+const DEFAULT_ADJUSTMENTS = new URL("../content/editorial/outubro-2026.ajustes.json", import.meta.url);
 
 type SectionKey = "word" | "reflection" | "pause" | "prayer" | "practice" | "closing" | "reference" | "share";
 
@@ -250,22 +232,6 @@ function parse(txt: string) {
         .join(" ")
         .replace(/^["“]|["”]$/g, "") || null;
 
-    const special = SPECIAL_DATES[day];
-    if (special && d.kind === "comum") {
-      if (d.reflection.join(" ").includes(special)) {
-        d.kind = "data-especial";
-        d.label = special;
-      } else warnings.push(`Dia ${day}: data especial “${special}” não citada no texto — não marcada.`);
-    }
-
-    if (!d.shareQuestion) {
-      const fromText = SHARE_FROM_TEXT[day];
-      if (fromText) {
-        if (d.reflection.includes(fromText)) d.shareQuestion = fromText;
-        else warnings.push(`Dia ${day}: pergunta de compartilhamento não encontrada literalmente no texto.`);
-      } else if (d.pause.length === 1 && d.pause[0].trim().endsWith("?")) d.shareQuestion = d.pause[0];
-    }
-
     const missing: string[] = [];
     if (!d.title) missing.push("título");
     if (d.word && !d.word.reference) missing.push("A PALAVRA (referência)");
@@ -295,10 +261,71 @@ if (args[0] === "--skeleton") {
   ({ days, warnings } = parse(readFileSync(src, "utf8")));
 }
 
+/* ───────── Ajustes editoriais (rastreáveis) ───────── */
+
+type Field = "title" | "kind" | "label" | "shareQuestion" | "closingPhrase" | "reference" | "word.reference" | "reflection" | "pause" | "prayer" | "practice";
+interface Adjustment {
+  dia: number;
+  campo: Field;
+  valor?: string | string[];
+  substituir?: { de: string; para: string };
+  /** Exige que o valor exista literalmente neste campo (ex.: "reflection"). */
+  literal?: Field;
+  novo?: boolean;
+  motivo: string;
+}
+
+function get(d: Devotional, f: Field): string | string[] | null {
+  if (f === "word.reference") return d.word?.reference ?? null;
+  return (d as unknown as Record<string, string | string[] | null>)[f];
+}
+
+function set(d: Devotional, f: Field, v: string | string[]) {
+  if (f === "word.reference") d.word = { reference: v as string, text: [] };
+  else (d as unknown as Record<string, unknown>)[f] = v;
+}
+
+const applied: string[] = [];
+if (!args.includes("--sem-ajustes") && args[0] !== "--skeleton") {
+  const { ajustes } = JSON.parse(readFileSync(DEFAULT_ADJUSTMENTS, "utf8")) as { ajustes: Adjustment[] };
+  for (const a of ajustes) {
+    const d = days[a.dia - 1];
+    if (a.substituir) {
+      const cur = get(d, a.campo);
+      const list = Array.isArray(cur) ? cur : cur ? [cur] : [];
+      const hit = list.findIndex((t) => t.includes(a.substituir!.de));
+      if (hit < 0) {
+        warnings.push(`Ajuste ignorado — dia ${a.dia}, ${a.campo}: trecho “${a.substituir.de}” não encontrado.`);
+        continue;
+      }
+      list[hit] = list[hit].replace(a.substituir.de, a.substituir.para);
+      set(d, a.campo, Array.isArray(cur) ? list : list[0]);
+    } else if (a.valor !== undefined) {
+      if (a.literal) {
+        const src = get(d, a.literal);
+        const hay = Array.isArray(src) ? src.join("\n") : (src ?? "");
+        if (!hay.includes(a.valor as string)) {
+          warnings.push(`Ajuste ignorado — dia ${a.dia}, ${a.campo}: valor não encontrado literalmente em ${a.literal}.`);
+          continue;
+        }
+      }
+      set(d, a.campo, a.valor);
+    }
+    d.ajustes = [...(d.ajustes ?? []), a.novo ? `${a.campo} (texto novo)` : a.campo];
+    applied.push(`dia ${a.dia} · ${a.campo}${a.novo ? " · texto novo" : ""}`);
+  }
+}
+
+// Pergunta para compartilhar: só quando o PARE AQUI é, sozinho, uma pergunta.
+for (const d of days) {
+  if (!d.shareQuestion && d.pause.length === 1 && d.pause[0].trim().endsWith("?")) d.shareQuestion = d.pause[0];
+}
+
 const out = args.includes("--out") ? new URL(args[args.indexOf("--out") + 1], `file://${process.cwd()}/`) : OUT;
 writeFileSync(out, JSON.stringify({ id: "2026-10", label: "Outubro", year: YEAR, days }, null, 2) + "\n");
 
 const kinds = days.filter((d) => d.kind !== "comum").map((d) => `${d.date.slice(8)} ${d.kind}${d.label ? ` (${d.label})` : ""}`);
 console.log(`✓ ${days.filter((d) => d.source === "arquivo").length}/31 dias importados do arquivo → ${out.pathname}`);
 if (kinds.length) console.log(`  Dias especiais: ${kinds.join(" · ")}`);
+if (applied.length) console.log(`  Ajustes editoriais aplicados (${applied.length}):\n    ${applied.join("\n    ")}`);
 for (const w of warnings) console.log(`  · ${w}`);

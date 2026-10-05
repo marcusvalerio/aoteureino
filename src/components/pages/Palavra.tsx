@@ -33,25 +33,32 @@ export function Palavra() {
         aria-labelledby="ref"
         className="flex flex-1 flex-col"
       >
-        <h2 id="ref" className="font-display text-[2rem] leading-tight text-ink sm:text-[2.4rem]">
-          {p.reference}
-        </h2>
-        <span aria-hidden className="mt-8 block h-px w-10 bg-line-strong" />
+        <div className="flex flex-1 flex-col justify-center pb-10">
+          <h2 id="ref" className="font-display text-[2.5rem] leading-[1.1] text-ink text-balance sm:text-[3rem]">
+            {p.reference}
+          </h2>
+          <span aria-hidden className="mt-9 block h-px w-10 bg-line-strong" />
 
-        <div className="font-display mt-9 space-y-5 text-[calc(1.375rem*var(--reading-scale))] leading-[1.6] text-ink">
-          {p.verses.map((v, i) => (
+          {p.verses?.length ? (
+            // Texto integral: só quando houver tradução oficial e licenciada.
+            <div className="font-display mt-9 space-y-5 text-[calc(1.375rem*var(--reading-scale))] leading-[1.6] text-ink">
+              {p.verses.map((v, i) => (
+                <motion.p key={v.n} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.4, delay: 0.5 + i * 0.25, ease }}>
+                  {verseNumbers && <sup className="mr-1.5 font-sans text-[0.6875rem] font-medium tracking-wide text-accent">{v.n}</sup>}
+                  {v.text}
+                </motion.p>
+              ))}
+            </div>
+          ) : (
             <motion.p
-              key={v.n}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1.4, delay: 0.5 + i * 0.25, ease }}
+              transition={{ duration: 1.4, delay: 0.7, ease }}
+              className="mt-8 max-w-xs text-[calc(1rem*var(--reading-scale))] leading-relaxed text-ink-2"
             >
-              {verseNumbers && (
-                <sup className="mr-1.5 font-sans text-[0.6875rem] font-medium tracking-wide text-accent">{v.n}</sup>
-              )}
-              {v.text}
+              Leia esta passagem diretamente na sua Bíblia.
             </motion.p>
-          ))}
+          )}
         </div>
 
         <div className="mt-16 flex items-center justify-between border-t border-line pb-8 pt-4">
@@ -59,7 +66,7 @@ export function Palavra() {
           <SaveButton
             withText
             label="Guardar passagem"
-            item={{ id: `passagem:${p.id}`, kind: "passagem", title: p.reference, text: passageText(p), reference: p.reference, href: "/palavra" }}
+            item={{ id: `passagem:${p.id}`, kind: "passagem", title: p.reference, text: passageText(p) ?? undefined, reference: p.reference, href: "/palavra" }}
           />
         </div>
       </motion.article>

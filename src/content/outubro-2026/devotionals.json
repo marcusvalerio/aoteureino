@@ -123,7 +123,10 @@
       "closingPhrase": "Algumas respostas começam quando finalmente somos honestos.",
       "reference": "Salmos 139:23–24",
       "shareQuestion": "O que você realmente gostaria que Deus mudasse em sua vida — e o que você sabe que também precisa mudar em você?",
-      "source": "arquivo"
+      "source": "arquivo",
+      "ajustes": [
+        "shareQuestion"
+      ]
     },
     {
       "date": "2026-10-05",
@@ -433,8 +436,8 @@
     {
       "date": "2026-10-15",
       "title": "O QUE DEUS VÊ QUANDO NINGUÉM ESTÁ OLHANDO",
-      "kind": "data-especial",
-      "label": "Dia do Professor",
+      "kind": "comum",
+      "label": null,
       "word": {
         "reference": "Colossenses 3:23–24; Lucas 16:10",
         "text": []
@@ -476,7 +479,7 @@
         "O pedido não transforma o futuro em algo totalmente conhecido. Ele nos traz de volta para a dependência de hoje.",
         "Talvez você esteja tão preocupado com o que vai faltar daqui a seis meses que não consegue perceber aquilo que existe na mesa de hoje. Gratidão não significa ignorar problemas. Significa não permitir que o medo do amanhã apague completamente a realidade do presente.",
         "Há um equilíbrio bonito entre planejar e depender. Podemos trabalhar, economizar, estudar e construir — e ainda reconhecer que a vida não está inteiramente em nossas mãos.",
-        "A alimentação também nos lembra que aquilo que recebemos pode ser compartilhado."
+        "O pão também nos lembra que aquilo que recebemos pode ser compartilhado."
       ],
       "pause": [
         "O que você está projetando para o futuro que está impedindo você de agradecer pelo presente?"
@@ -490,13 +493,16 @@
       "closingPhrase": "A ansiedade quer morar no amanhã; a gratidão nos ensina a perceber o hoje.",
       "reference": "Mateus 6:9–13; Mateus 6:25–34",
       "shareQuestion": "O que você está projetando para o futuro que está impedindo você de agradecer pelo presente?",
-      "source": "arquivo"
+      "source": "arquivo",
+      "ajustes": [
+        "reflection"
+      ]
     },
     {
       "date": "2026-10-17",
       "title": "O QUE VOCÊ FAZ COM AQUILO QUE RECEBEU?",
-      "kind": "data-especial",
-      "label": "Dia Internacional para a Erradicação da Pobreza",
+      "kind": "comum",
+      "label": null,
       "word": {
         "reference": "Mateus 25:14–30; Tiago 2:14–17",
         "text": []
@@ -555,38 +561,47 @@
     },
     {
       "date": "2026-10-19",
-      "title": "O QUE VOCÊ FAZ QUANDO NINGUÉM ESTÁ VENDO?",
+      "title": "UMA VIDA SEM DUAS VERSÕES",
       "kind": "comum",
       "label": null,
       "word": {
-        "reference": "Colossenses 3:23–24; Lucas 16:10",
+        "reference": "Salmos 15:1–2; Provérbios 10:9",
         "text": []
       },
       "reflection": [
         "Caráter aparece quando o aplauso desaparece.",
-        "É fácil fazer bem feito quando alguém está observando. Mais difícil é manter a mesma integridade quando ninguém saberá se você entregou o melhor ou o mínimo.",
-        "A Bíblia conecta trabalho, fidelidade e intenção. O cotidiano também pode ser lugar de serviço a Deus.",
-        "Isso vale para coisas aparentemente pequenas: cumprir um combinado, devolver algo que não é seu, admitir um erro, terminar uma tarefa com cuidado, tratar bem alguém que não pode lhe oferecer nada em troca.",
-        "A espiritualidade não acontece apenas em momentos religiosos. Ela aparece na maneira como vivemos quando a plateia vai embora."
+        "Quase ninguém decide, de uma vez, viver uma vida dupla. Ela costuma começar em pequenas distâncias: entre o que dizemos e o que fazemos, entre a pessoa que mostramos e a pessoa que somos quando a porta se fecha.",
+        "O salmo pergunta quem pode habitar junto de Deus e responde com algo surpreendentemente simples: quem anda com sinceridade e fala a verdade no próprio coração. Integridade tem a ver com inteireza. Ser a mesma pessoa por dentro e por fora.",
+        "Isso não é um convite ao perfeccionismo. Todos nós carregamos contradições, e a graça não começa depois que elas acabam. O convite é outro: não se acostumar com elas. Perceber a pequena distância antes que ela vire hábito.",
+        "Provérbios diz que quem anda em sinceridade anda seguro. Talvez porque uma vida inteira não precisa ser vigiada o tempo todo. Ela não depende de esconder nada para continuar de pé."
       ],
       "pause": [
         "Qual pequena coisa você faria diferente hoje se soubesse que ninguém descobriria?"
       ],
       "prayer": [
-        "Senhor, forma em mim um caráter íntegro. Que eu não dependa de fiscalização para fazer o que é certo. Ajuda-me a viver com a mesma honestidade diante de pessoas e quando estiver sozinho. Amém."
+        "Senhor, Tu me conheces por dentro e por fora. Mostra-me as pequenas distâncias entre aquilo que digo e aquilo que vivo. Ajuda-me a viver com a mesma honestidade diante de pessoas e quando estiver sozinho. Amém."
       ],
       "practice": [
-        "Escolha uma tarefa pequena e faça-a hoje com atenção total, mesmo que ninguém reconheça."
+        "Escolha uma pequena incoerência que só você conhece e dê hoje um passo concreto para corrigi-la."
       ],
-      "closingPhrase": "Caráter é continuar sendo inteiro quando não existe plateia.",
-      "reference": "Colossenses 3:23–24; Lucas 16:10",
+      "closingPhrase": "Integridade é ser a mesma pessoa com a porta aberta ou fechada.",
+      "reference": "Salmos 15:1–2; Provérbios 10:9",
       "shareQuestion": "Qual pequena coisa você faria diferente hoje se soubesse que ninguém descobriria?",
-      "source": "arquivo"
+      "source": "arquivo",
+      "ajustes": [
+        "title (texto novo)",
+        "word.reference (texto novo)",
+        "reference (texto novo)",
+        "reflection (texto novo)",
+        "prayer (texto novo)",
+        "practice (texto novo)",
+        "closingPhrase (texto novo)"
+      ]
     },
     {
       "date": "2026-10-20",
       "title": "QUANDO DEUS PARECE SILENCIOSO",
-      "kind": "comum",
+      "kind": "visita",
       "label": null,
       "word": {
         "reference": "Salmos 13; Salmos 22:1–2",
@@ -611,7 +626,10 @@
       "closingPhrase": "O silêncio de uma resposta não precisa ser o fim da conversa.",
       "reference": "Salmos 13; Salmos 22:1–2",
       "shareQuestion": "Você está interpretando a ausência de uma resposta como se fosse necessariamente ausência de Deus?",
-      "source": "arquivo"
+      "source": "arquivo",
+      "ajustes": [
+        "kind"
+      ]
     },
     {
       "date": "2026-10-21",
@@ -708,8 +726,8 @@
     {
       "date": "2026-10-24",
       "title": "UM REINO QUE NÃO TERMINA EM NÓS",
-      "kind": "data-especial",
-      "label": "Dia das Nações Unidas",
+      "kind": "comum",
+      "label": null,
       "word": {
         "reference": "Mateus 5:13–16; João 13:34–35",
         "text": []
@@ -922,7 +940,7 @@
       "date": "2026-10-31",
       "title": "O EVANGELHO NÃO É APENAS ALGO QUE VOCÊ ACREDITA",
       "kind": "data-especial",
-      "label": "Dia Nacional da Proclamação do Evangelho",
+      "label": "Proclamação do Evangelho",
       "word": {
         "reference": "Romanos 1:16; 2 Coríntios 5:20",
         "text": []
@@ -948,7 +966,11 @@
       "closingPhrase": "O Evangelho que transforma o coração também encontra caminho pelas mãos, pelas palavras e pela vida.",
       "reference": "Romanos 1:16; 2 Coríntios 5:20",
       "shareQuestion": "O que em sua vida precisa se tornar mais coerente com aquilo que você diz acreditar?",
-      "source": "arquivo"
+      "source": "arquivo",
+      "ajustes": [
+        "kind",
+        "label"
+      ]
     }
   ]
 }

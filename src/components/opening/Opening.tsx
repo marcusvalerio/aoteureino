@@ -65,13 +65,13 @@ export function Opening() {
       return;
     }
     setPhase("reveal");
-    await after(2300);
+    await after(2000);
     if (!alive()) return;
     setPhase("pull");
-    await after(3900);
+    await after(3600);
     if (!alive()) return;
     setPhase("title");
-    await after(1300);
+    await after(1000);
     if (!alive()) return;
     setPhase((p) => (p === "title" ? "ready" : p));
   }, [reduced]);
@@ -164,7 +164,7 @@ export function Opening() {
                 style={{ transformOrigin: `${pct(FOCUS.x)} ${pct(FOCUS.y)}`, willChange: "transform" }}
                 initial={{ scale: reduced ? 1 : PULL_FROM, y: "0%" }}
                 animate={{ scale: reduced ? 1 : scale, y: phase === "pull" || showTitle ? "0%" : "1.2%" }}
-                transition={{ duration: t(phase === "pull" ? 5.2 : 0.8), ease: EASE_CAMERA }}
+                transition={{ duration: t(phase === "pull" ? 4.8 : 0.8), ease: EASE_CAMERA }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- imagem estática pré-renderizada */}
                 <img

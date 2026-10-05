@@ -48,6 +48,8 @@ export interface Devotional {
   shareQuestion: string | null;
   /** De onde veio o texto — permite auditar o que é editorial e o que ainda falta. */
   source: "arquivo" | "pendente";
+  /** Campos alterados por content/editorial/*.ajustes.json (auditoria). */
+  ajustes?: string[];
 }
 
 export interface Passage {
@@ -56,7 +58,8 @@ export interface Passage {
   /** Livro, para evitar repetir a passagem do devocional do dia. */
   book: string;
   chapter: number;
-  verses: { n: number; text: string }[];
+  /** Texto integral — só quando a tradução oficial estiver definida e licenciada. */
+  verses?: { n: number; text: string }[];
 }
 
 export interface Month {

@@ -42,17 +42,22 @@ export function Jornada() {
           const future = today ? isFuture(n) : false;
           const open = !future || readAhead;
           const done = walked.includes(d.date);
-          // A visita só aparece na jornada depois de vivida.
-          const kind = d.kind === "visita" ? (visits.includes(d.date) ? "visita" : "comum") : d.kind;
-          const tag = kind === "visita" ? "Visita" : kind !== "comum" ? (d.label ?? KIND_LABEL[kind]) : null;
-          const showTitle = open && !(d.kind === "visita" && future);
-          const special = kind !== "comum";
+          // O dia da visita nunca recebe nome nem rótulo. Depois de vivido,
+          // guarda apenas uma luz discreta em volta da pedra.
+          const hidden = d.kind === "visita";
+          const lingering = hidden && visits.includes(d.date);
+          const tag = !hidden && d.kind !== "comum" ? (d.label ?? KIND_LABEL[d.kind]) : null;
+          const showTitle = open;
+          const special = tag !== null;
 
           const row = (
             <>
               <span className="relative z-10 flex w-[2.375rem] shrink-0 justify-center pt-[0.7rem]" aria-hidden>
-                {isToday && (
-                  <span className="absolute top-[0.2rem] h-8 w-8 rounded-full" style={{ background: "radial-gradient(closest-side, var(--glow), transparent)" }} />
+                {(isToday || lingering) && (
+                  <span
+                    className={`absolute top-[0.2rem] h-8 w-8 rounded-full ${lingering && !isToday ? "opacity-70" : ""}`}
+                    style={{ background: "radial-gradient(closest-side, var(--glow), transparent)" }}
+                  />
                 )}
                 <span
                   className={`block transition-all duration-700 ${

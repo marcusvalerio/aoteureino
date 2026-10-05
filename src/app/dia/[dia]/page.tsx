@@ -13,8 +13,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/dia/[dia]">): Promise<Metadata> {
   const { dia } = await params;
   const d = getDevotional(Number(dia));
-  // O título de um dia "visita" não é exposto em metadados.
-  const title = d && d.kind !== "visita" ? displayTitle(d.title) : `${dia} de outubro`;
+  const title = d ? displayTitle(d.title) : `${dia} de outubro`;
   return { title: `${title} — AO TEU REINO` };
 }
 

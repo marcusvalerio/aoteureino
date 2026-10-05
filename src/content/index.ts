@@ -55,8 +55,9 @@ export function palavraFor(day: number): Passage {
   return PASSAGES[(day - 1) % PASSAGES.length];
 }
 
+/** Texto integral da passagem, quando houver tradução oficial. */
 export function passageText(p: Passage) {
-  return p.verses.map((v) => v.text).join(" ");
+  return p.verses?.map((v) => v.text).join(" ") ?? null;
 }
 
 /** Palavras que mantêm maiúscula quando o título sai da caixa alta. */

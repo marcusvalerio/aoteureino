@@ -18,7 +18,8 @@ Ensaio da experiência escondida: `/?ensaio=visita`.
 ## Estrutura
 
 ```
-content/fonte/outubro-2026.txt     fonte editorial (não editar à mão no código)
+content/fonte/outubro-2026.txt     fonte editorial (não é editada)
+content/editorial/                 ajustes rastreáveis (.ajustes.json) e notas de decisão
 scripts/import-content.mts         .txt → src/content/outubro-2026/devotionals.json
 scripts/opening/                   gera a cena da abertura e as texturas de pedra (WebP)
 scripts/qa/screens.mjs             capturas de tela para revisão visual
@@ -42,7 +43,13 @@ npm run content:import -- outro-arquivo.txt
 
 O importador preserva o texto, reconhece as seções (PALAVRA, REFLEXÃO, PARE AQUI, ORE,
 VIVA ISSO HOJE, PARA LEVAR COM VOCÊ, REFERÊNCIA) e marcadores de dia
-(ENCONTRO, DATA ESPECIAL, PAUSA, MERGULHO, A VISITA DO ANJO), e lista o que faltar.
+(ENCONTRO, DATA ESPECIAL, PAUSA, MERGULHO, A VISITA DO ANJO), e lista o que faltar. Em seguida aplica `content/editorial/outubro-2026.ajustes.json`:
+cada alteração tem dia, campo, valor e motivo, e `"novo": true` marca texto escrito fora da fonte
+(`--sem-ajustes` importa a fonte pura).
+
+A PALAVRA mostra apenas referências até a tradução bíblica ser definida e licenciada
+(`src/content/palavra/selecao.ts`, campo `verses`). Os textos provisórios do protótipo ficam
+isolados em `textos-provisorios.ts` e não são importados pela interface.
 
 ### Prévia em página única
 

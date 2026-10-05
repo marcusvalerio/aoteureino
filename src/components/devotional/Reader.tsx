@@ -55,8 +55,8 @@ export function Reader({ day }: { day: number }) {
   const locked = isFuture(day) && !settings.readAhead;
   if (locked) return <NotYet devotional={d} day={day} />;
 
-  // A visita acontece uma vez, no próprio dia.
-  if (d.kind === "visita" && day === today.day && today.inMonth && !visits.includes(d.date)) {
+  // A visita acontece uma vez: no próprio dia ou na primeira vez que o dia for aberto depois dele.
+  if (d.kind === "visita" && !isFuture(day) && !visits.includes(d.date)) {
     return <Visita devotional={d} />;
   }
 
@@ -140,7 +140,7 @@ function Devotional({ devotional: d, day }: { devotional: Devotional; day: numbe
             {d.word && d.word.text.length > 0 ? (
               <Paragraphs items={d.word.text} className="reading-display font-display mt-6 text-ink-2" />
             ) : (
-              <p className="mt-4 text-[0.875rem] text-ink-3">Abra a sua Bíblia nesta passagem antes de seguir.</p>
+              <p className="mt-4 text-[0.875rem] text-ink-3">Leia esta passagem diretamente na sua Bíblia antes de seguir.</p>
             )}
           </section>
         </Reveal>

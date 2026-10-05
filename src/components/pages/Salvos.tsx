@@ -32,7 +32,7 @@ export function Salvos() {
       </header>
 
       {hydrated && items.length > 0 && (
-        <div className="mb-6 grid grid-cols-4" role="tablist" aria-label="Filtrar salvos">
+        <div className="mb-6 flex flex-wrap gap-x-5" role="tablist" aria-label="Filtrar salvos">
           {FILTERS.map((f) => (
             <button
               key={f.id}
@@ -40,7 +40,7 @@ export function Salvos() {
               role="tab"
               aria-selected={filter === f.id}
               onClick={() => setFilter(f.id)}
-              className={`eyebrow min-h-11 px-1 text-[0.5625rem] tracking-[0.14em] transition-colors duration-300 ${
+              className={`eyebrow min-h-11 text-[0.5625rem] tracking-[0.16em] transition-colors duration-300 ${
                 filter === f.id ? "text-ink underline decoration-accent decoration-1 underline-offset-[10px]" : "text-ink-3 hover:text-ink-2"
               }`}
             >
@@ -62,7 +62,7 @@ export function Salvos() {
             {items.length === 0 ? "Nada guardado ainda." : "Nada guardado nesta categoria."}
           </p>
           <p className="mt-3 max-w-xs text-[0.9375rem] leading-relaxed text-ink-2">
-            Ao ler, toque no marcador para guardar um devocional, uma frase ou uma passagem. Tudo fica só neste aparelho.
+            Ao ler, toque no marcador para guardar um devocional, uma frase ou a referência de uma passagem. Tudo fica só neste aparelho.
           </p>
         </motion.div>
       )}
@@ -82,17 +82,16 @@ export function Salvos() {
               <div className="flex gap-3 py-6">
                 <Link href={item.href} className="min-w-0 flex-1">
                   <p className="eyebrow text-[0.5625rem] text-ink-3">{KIND[item.kind]}</p>
-                  {item.kind === "devocional" ? (
+                  {item.kind !== "frase" ? (
                     <p className="font-display mt-2 text-[1.35rem] leading-snug text-ink">{item.title}</p>
                   ) : (
                     <>
-                      <p className={`font-display mt-2 leading-snug text-ink ${item.kind === "frase" ? "text-[1.3rem]" : "line-clamp-4 text-[1.1rem]"}`}>
-                        {item.kind === "frase" ? `“${item.text}”` : item.text}
-                      </p>
-                      <p className="mt-2 text-[0.8125rem] text-ink-3">{item.kind === "frase" ? item.title : item.reference}</p>
+                      <p className="font-display mt-2 text-[1.3rem] leading-snug text-ink">“{item.text}”</p>
+                      <p className="mt-2 text-[0.8125rem] text-ink-3">{item.title}</p>
                     </>
                   )}
                   {item.kind === "devocional" && item.reference && <p className="mt-1.5 text-[0.8125rem] text-ink-3">{item.reference}</p>}
+                  {item.kind === "passagem" && <p className="mt-1.5 text-[0.8125rem] text-ink-3">Para ler na sua Bíblia</p>}
                 </Link>
                 <button
                   type="button"

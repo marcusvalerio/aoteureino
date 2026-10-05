@@ -163,7 +163,6 @@ export function Mais() {
             checked={s.motion === "reduzido"}
             onChange={(v) => set({ motion: v ? "reduzido" : "sistema" })}
           />
-          <Toggle label="Números dos versículos" hint="Na aba Palavra." checked={s.verseNumbers} onChange={(verseNumbers) => set({ verseNumbers })} />
           <Toggle
             label="Ler dias à frente"
             hint="Permite abrir os dias de outubro que ainda não chegaram."
@@ -204,7 +203,7 @@ export function Mais() {
               ))}
             </ul>
             <p className="mt-6 text-[0.8125rem] text-ink-3">
-              A aba Palavra usa uma seleção editorial local, com texto na tradição Almeida. A edição e a licença da tradução estão em revisão editorial.
+              A aba Palavra indica uma passagem por dia, escolhida pela editoria, para leitura na sua Bíblia. O texto integral será incluído quando a tradução e a licença estiverem definidas.
             </p>
           </Disclosure>
           <Disclosure title="Privacidade">
