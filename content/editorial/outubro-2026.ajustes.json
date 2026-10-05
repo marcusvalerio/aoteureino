@@ -12,7 +12,10 @@
     {
       "dia": 16,
       "campo": "reflection",
-      "substituir": { "de": "A alimentação também nos lembra", "para": "O pão também nos lembra" },
+      "substituir": {
+        "de": "A alimentação também nos lembra",
+        "para": "O pão também nos lembra"
+      },
       "motivo": "\"A alimentação\" soava como alusão indireta ao Dia Mundial da Alimentação (16/10), sem que a data fosse citada. \"O pão\" retoma a imagem do próprio devocional e mantém a ideia de partilha, que a oração do dia confirma."
     },
     {
@@ -41,13 +44,13 @@
       "campo": "reflection",
       "valor": [
         "Caráter aparece quando o aplauso desaparece.",
-        "Quase ninguém decide, de uma vez, viver uma vida dupla. Ela costuma começar em pequenas distâncias: entre o que dizemos e o que fazemos, entre a pessoa que mostramos e a pessoa que somos quando a porta se fecha.",
-        "O salmo pergunta quem pode habitar junto de Deus e responde com algo surpreendentemente simples: quem anda com sinceridade e fala a verdade no próprio coração. Integridade tem a ver com inteireza. Ser a mesma pessoa por dentro e por fora.",
-        "Isso não é um convite ao perfeccionismo. Todos nós carregamos contradições, e a graça não começa depois que elas acabam. O convite é outro: não se acostumar com elas. Perceber a pequena distância antes que ela vire hábito.",
-        "Provérbios diz que quem anda em sinceridade anda seguro. Talvez porque uma vida inteira não precisa ser vigiada o tempo todo. Ela não depende de esconder nada para continuar de pé."
+        "Quase ninguém decide viver uma vida dupla. Ela começa em pequenas distâncias: uma desculpa que não é bem verdade, um valor defendido em público e esquecido em casa, uma vantagem pequena que ninguém vai notar. Aos poucos, a pessoa que mostramos e a pessoa que somos quando a porta se fecha começam a se afastar.",
+        "O Salmo 15 pergunta quem pode habitar na presença de Deus. A resposta não fala de grandes gestos religiosos. Fala de coisas do dia a dia: andar com sinceridade, agir com justiça, falar a verdade de coração. Integridade tem a ver com inteireza. Ser a mesma pessoa por dentro e por fora.",
+        "Isso não é um convite ao perfeccionismo. Todos nós carregamos contradições, e a graça não espera que elas acabem para nos alcançar. Mas existe uma diferença entre ter contradições e se acostumar com elas. A integridade começa quando você percebe a pequena distância antes que ela vire hábito.",
+        "Provérbios diz que quem anda em sinceridade anda seguro. Talvez porque quem vive inteiro não precisa administrar versões de si mesmo. Não precisa lembrar o que disse a quem, nem proteger uma imagem. Pode simplesmente ser quem é."
       ],
       "novo": true,
-      "motivo": "Os parágrafos 2 a 5 do original eram cópia literal da reflexão do dia 15. Preservada a primeira frase original (exclusiva do dia 19); o restante foi reescrito mantendo a intenção do dia: integridade quando ninguém vê."
+      "motivo": "Os parágrafos 2 a 5 do original eram cópia literal da reflexão do dia 15. Preservada a primeira frase original (exclusiva do dia 19); o restante foi reescrito mantendo a intenção do dia: integridade quando ninguém vê. Revisado na rodada de fechamento: exemplos concretos no 2º parágrafo; o 3º passa a refletir o que o Salmo 15 de fato descreve (conduta cotidiana, não gestos religiosos); o 4º e o 5º ficaram mais diretos."
     },
     {
       "dia": 19,
@@ -61,9 +64,11 @@
     {
       "dia": 19,
       "campo": "practice",
-      "valor": ["Escolha uma pequena incoerência que só você conhece e dê hoje um passo concreto para corrigi-la."],
+      "valor": [
+        "Pense em uma pequena incoerência que só você conhece — uma desculpa, um atalho, uma promessa esquecida — e faça hoje uma coisa concreta para corrigi-la."
+      ],
       "novo": true,
-      "motivo": "A prática original repetia a segunda metade da prática do dia 15 (\"tarefa pequena... sem reconhecimento\")."
+      "motivo": "A prática original repetia a segunda metade da prática do dia 15 (\"tarefa pequena... sem reconhecimento\"). Revisado na rodada de fechamento para ficar mais concreto."
     },
     {
       "dia": 19,
@@ -77,6 +82,28 @@
       "campo": "kind",
       "valor": "visita",
       "motivo": "Escolhido para A Visita do Anjo. Fala da experiência de orar sem perceber resposta: identificação ampla, sem data comemorativa, e o próprio texto recusa transformar o silêncio em mensagem secreta — o que protege a experiência de qualquer manipulação."
+    },
+    {
+      "dia": 27,
+      "campo": "word.reference",
+      "valor": "Zacarias 4:10; 1 Tessalonicenses 4:11–12",
+      "motivo": "Mateus 6:3–4 está contido em Mateus 6:1–6, passagem do dia 14. Zacarias 4:10 (não desprezar o dia das pequenas coisas) conversa com o fechamento original do dia: \"Não despreze uma vida que não cabe em um post\". 1 Tessalonicenses 4:11–12 é mantido."
+    },
+    {
+      "dia": 27,
+      "campo": "reference",
+      "valor": "Zacarias 4:10; 1 Tessalonicenses 4:11–12",
+      "motivo": "Acompanha a nova PALAVRA do dia."
+    },
+    {
+      "dia": 27,
+      "campo": "reflection",
+      "inserir": {
+        "depoisDe": "Significa que valor não depende de escala.",
+        "texto": "Zacarias escreve para um povo que reconstruía o templo e achava pequeno demais o que via subir. Pedra sobre pedra, sem grandeza aparente. A pergunta do profeta continua atual: quem vai desprezar o dia dos pequenos começos?"
+      },
+      "novo": true,
+      "motivo": "Único parágrafo novo do dia: liga a reflexão original à nova passagem. Os demais parágrafos, a pergunta, a oração, a prática e a frase final são os do arquivo."
     },
     {
       "dia": 31,

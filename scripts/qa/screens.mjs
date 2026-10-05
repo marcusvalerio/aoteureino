@@ -88,6 +88,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   await p.goto(BASE + '/jornada'); await wait(1500); await p.mouse.wheel(0, 900); await wait(800); await shot(p, '37-jornada-depois-da-visita');
   await p.goto(BASE + '/'); await wait(1500); await shot(p, '38-inicio-depois-da-visita');
   await p.goto(BASE + '/dia/19'); await wait(1500); await shot(p, '39-dia-19', true);
+  await p.goto(BASE + '/dia/27?hoje=2026-10-27'); await wait(1500); await shot(p, '39b-dia-27', true);
   await p.goto(BASE + '/?hoje=2026-10-31'); await wait(1500); await shot(p, '40-dia-31-inicio');
   await p.goto(BASE + '/palavra'); await wait(2500); await shot(p, '41-palavra-31');
   await c.close();

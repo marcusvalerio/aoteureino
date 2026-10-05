@@ -570,10 +570,10 @@
       },
       "reflection": [
         "Caráter aparece quando o aplauso desaparece.",
-        "Quase ninguém decide, de uma vez, viver uma vida dupla. Ela costuma começar em pequenas distâncias: entre o que dizemos e o que fazemos, entre a pessoa que mostramos e a pessoa que somos quando a porta se fecha.",
-        "O salmo pergunta quem pode habitar junto de Deus e responde com algo surpreendentemente simples: quem anda com sinceridade e fala a verdade no próprio coração. Integridade tem a ver com inteireza. Ser a mesma pessoa por dentro e por fora.",
-        "Isso não é um convite ao perfeccionismo. Todos nós carregamos contradições, e a graça não começa depois que elas acabam. O convite é outro: não se acostumar com elas. Perceber a pequena distância antes que ela vire hábito.",
-        "Provérbios diz que quem anda em sinceridade anda seguro. Talvez porque uma vida inteira não precisa ser vigiada o tempo todo. Ela não depende de esconder nada para continuar de pé."
+        "Quase ninguém decide viver uma vida dupla. Ela começa em pequenas distâncias: uma desculpa que não é bem verdade, um valor defendido em público e esquecido em casa, uma vantagem pequena que ninguém vai notar. Aos poucos, a pessoa que mostramos e a pessoa que somos quando a porta se fecha começam a se afastar.",
+        "O Salmo 15 pergunta quem pode habitar na presença de Deus. A resposta não fala de grandes gestos religiosos. Fala de coisas do dia a dia: andar com sinceridade, agir com justiça, falar a verdade de coração. Integridade tem a ver com inteireza. Ser a mesma pessoa por dentro e por fora.",
+        "Isso não é um convite ao perfeccionismo. Todos nós carregamos contradições, e a graça não espera que elas acabem para nos alcançar. Mas existe uma diferença entre ter contradições e se acostumar com elas. A integridade começa quando você percebe a pequena distância antes que ela vire hábito.",
+        "Provérbios diz que quem anda em sinceridade anda seguro. Talvez porque quem vive inteiro não precisa administrar versões de si mesmo. Não precisa lembrar o que disse a quem, nem proteger uma imagem. Pode simplesmente ser quem é."
       ],
       "pause": [
         "Qual pequena coisa você faria diferente hoje se soubesse que ninguém descobriria?"
@@ -582,7 +582,7 @@
         "Senhor, Tu me conheces por dentro e por fora. Mostra-me as pequenas distâncias entre aquilo que digo e aquilo que vivo. Ajuda-me a viver com a mesma honestidade diante de pessoas e quando estiver sozinho. Amém."
       ],
       "practice": [
-        "Escolha uma pequena incoerência que só você conhece e dê hoje um passo concreto para corrigi-la."
+        "Pense em uma pequena incoerência que só você conhece — uma desculpa, um atalho, uma promessa esquecida — e faça hoje uma coisa concreta para corrigi-la."
       ],
       "closingPhrase": "Integridade é ser a mesma pessoa com a porta aberta ou fechada.",
       "reference": "Salmos 15:1–2; Provérbios 10:9",
@@ -820,7 +820,7 @@
       "kind": "comum",
       "label": null,
       "word": {
-        "reference": "Mateus 6:3–4; 1 Tessalonicenses 4:11–12",
+        "reference": "Zacarias 4:10; 1 Tessalonicenses 4:11–12",
         "text": []
       },
       "reflection": [
@@ -828,6 +828,7 @@
         "Há pessoas que cuidam de familiares, trabalham, estudam, cozinham, limpam, perseveram, servem e continuam — sem que ninguém publique sobre isso.",
         "Nossa cultura mede impacto por alcance. O Reino de Deus também olha para fidelidade.",
         "Isso não significa que grandes projetos sejam ruins. Significa que valor não depende de escala.",
+        "Zacarias escreve para um povo que reconstruía o templo e achava pequeno demais o que via subir. Pedra sobre pedra, sem grandeza aparente. A pergunta do profeta continua atual: quem vai desprezar o dia dos pequenos começos?",
         "Talvez seu dia pareça comum demais para você. Mas existe dignidade em cumprir bem aquilo que foi colocado diante de você.",
         "Não despreze uma vida que não cabe em um post."
       ],
@@ -841,9 +842,14 @@
         "Faça uma tarefa cotidiana hoje com gratidão, sem transformá-la em conteúdo para ninguém."
       ],
       "closingPhrase": "Uma vida fiel não precisa ser uma vida famosa.",
-      "reference": "Mateus 6:3–4; 1 Tessalonicenses 4:11–12",
+      "reference": "Zacarias 4:10; 1 Tessalonicenses 4:11–12",
       "shareQuestion": "Qual parte silenciosa da sua vida você trata como insignificante porque ninguém aplaude?",
-      "source": "arquivo"
+      "source": "arquivo",
+      "ajustes": [
+        "word.reference",
+        "reference",
+        "reflection (texto novo)"
+      ]
     },
     {
       "date": "2026-10-28",

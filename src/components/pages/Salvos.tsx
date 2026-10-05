@@ -32,7 +32,7 @@ export function Salvos() {
       </header>
 
       {hydrated && items.length > 0 && (
-        <div className="mb-6 flex flex-wrap gap-x-5" role="tablist" aria-label="Filtrar salvos">
+        <div className="mb-6 flex flex-wrap gap-x-2.5 sm:gap-x-6" role="tablist" aria-label="Filtrar salvos">
           {FILTERS.map((f) => (
             <button
               key={f.id}
@@ -40,7 +40,7 @@ export function Salvos() {
               role="tab"
               aria-selected={filter === f.id}
               onClick={() => setFilter(f.id)}
-              className={`eyebrow min-h-11 text-[0.5625rem] tracking-[0.16em] transition-colors duration-300 ${
+              className={`eyebrow min-h-11 whitespace-nowrap tracking-[0.08em]! sm:tracking-[0.16em]! transition-colors duration-300 ${
                 filter === f.id ? "text-ink underline decoration-accent decoration-1 underline-offset-[10px]" : "text-ink-3 hover:text-ink-2"
               }`}
             >

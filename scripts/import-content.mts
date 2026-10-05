@@ -269,6 +269,8 @@ interface Adjustment {
   campo: Field;
   valor?: string | string[];
   substituir?: { de: string; para: string };
+  /** Insere um parágrafo novo logo depois do parágrafo que contém `depoisDe`. */
+  inserir?: { depoisDe: string; texto: string };
   /** Exige que o valor exista literalmente neste campo (ex.: "reflection"). */
   literal?: Field;
   novo?: boolean;
@@ -300,6 +302,14 @@ if (!args.includes("--sem-ajustes") && args[0] !== "--skeleton") {
       }
       list[hit] = list[hit].replace(a.substituir.de, a.substituir.para);
       set(d, a.campo, Array.isArray(cur) ? list : list[0]);
+    } else if (a.inserir) {
+      const list = get(d, a.campo);
+      const at = Array.isArray(list) ? list.findIndex((t) => t.includes(a.inserir!.depoisDe)) : -1;
+      if (!Array.isArray(list) || at < 0) {
+        warnings.push(`Ajuste ignorado — dia ${a.dia}, ${a.campo}: parágrafo “${a.inserir.depoisDe}” não encontrado.`);
+        continue;
+      }
+      list.splice(at + 1, 0, a.inserir.texto);
     } else if (a.valor !== undefined) {
       if (a.literal) {
         const src = get(d, a.literal);
